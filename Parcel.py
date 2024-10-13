@@ -7,3 +7,7 @@ class Parcel:
 
     def add_property(self, property):
         self.properties.append(property)
+        
+    def __str__(self):
+        boundary_str = f"Boundary: [{self.boundary[0]}, {self.boundary[1]}]"
+        return f"Parcel {self.parcel_number}: {self.description}, {boundary_str}, Properties: {len(self.properties)}"

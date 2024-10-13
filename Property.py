@@ -8,3 +8,6 @@ class Property:
         
     def add_parcel(self, parcel):
         self.parcels.append(parcel)
+        
+    def __str__(self):
+        return f"Property {self.property_number}: {self.description}"
