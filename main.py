@@ -7,15 +7,17 @@ from Property import Property
 from DataGeneration.OperationGenerator import OpGenerator
 
 def main():
-   # tuple1 = (23, "2d")
-    #tuple2 = (23, "23")
-    #if tuple1 == tuple2:
-     #   print("Tuples are equal")
-    #operationGenerator = OpGenerator()
-    #operationGenerator.generate_inserts(10)
+    """ tuple1 = (23, "2d")
+    tuple2 = (23, "23")
+    if tuple1 == tuple2:
+       print("Tuples are equal") """
     #operationGenerator.generate_random_searches()
-    #operationGenerator.generate_searches()
-    points = [
+    operationGenerator = OpGenerator()
+    operationGenerator.generate_inserts(10)
+    operationGenerator.generate_searches()
+    operationGenerator.generate_deletes()
+
+    """ points = [
             (23, 35),
             (24, 36),
             (24, 40),
@@ -41,22 +43,26 @@ def main():
         # Delete the node with the town "Nitra"
     point_to_delete = (23, 35)
     kd_tree.delete(point_to_delete,towns[0])
-    point_to_delete = (21, 32)
-    kd_tree.delete(point_to_delete, towns[5])
-    # Delete the node with the town "Senica – úrad"
-    
-    # Delete the node with the town "Senica – škola"
+     # Delete the node with the town "Senica – úrad"
     point_to_delete = (22, 32)
-    kd_tree.delete(point_to_delete)
-    # Delete the node with the town "Senica – stanica"
-    point_to_delete = (22, 42)
-    kd_tree.delete(point_to_delete)
+    kd_tree.delete(point_to_delete,towns[5])
     # Delete the node with the town "Hodonín"
     point_to_delete = (12, 41)
-    kd_tree.delete(point_to_delete)
+    kd_tree.delete(point_to_delete,towns[11])
+   # Delete the node with the town "Senica – stanica"
+    point_to_delete = (22, 42)
+    kd_tree.delete(point_to_delete,towns[10])
+    # Delete the node with the town "Senica – škola"
+    point_to_delete = (22, 31)
+    kd_tree.delete(point_to_delete,towns[4])
+    
     # Delete the node with the town "Senica"
-    point_to_delete = (24, 40)
-    kd_tree.delete(point_to_delete)
+    point_to_delete = (22, 39)
+    kd_tree.delete(point_to_delete, towns[3])
+    print("Done") """
+    # Delete the node with the town "Senica"
+    """ point_to_delete = (24, 40)
+    kd_tree.delete(point_to_delete) """
         
 
 if __name__ == "__main__":  
