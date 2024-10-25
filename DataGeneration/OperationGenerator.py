@@ -1,17 +1,19 @@
 import random
+import sys
 from DataStructure.KDTree import KDTree
 from DataStructure.KDNode import KDNode
 
 class OpGenerator:
     def __init__(self, seed=None):
-        self.seed = seed if seed is not None else random.randint(1, 10000000)
-        self.kd_tree = KDTree()
-        self.generated_keys = []
-        self.all_nodes = []
+        self.__max_size = sys.maxsize
+        self.__seed = seed if seed is not None else random.randint(1, self.__maxsize)
+        self.__kd_tree = KDTree()
+        self.__generated_keys = []
+        self.__all_nodes = []
         
     
     def generate_inserts(self, num_operations=1000, percentage_of_duplicates=30):
-        random.seed(self.seed)
+        random.seed(self.__seed)
         currentlyGeneratedData = []
         keys = self.__generate_keys(num_operations, percentage_of_duplicates)
         print(f"Generating {num_operations} insert operations:\n")
@@ -22,9 +24,9 @@ class OpGenerator:
                 value = ''.join(random.choices('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', k=10))
                 print(f"Inserting key: {key} with value: {value}\n")
                 node = KDNode(key, value)
-                self.generated_keys.append(key)
+                self.__generated_keys.append(key)
                 currentlyGeneratedData.append(node.data)
-                self.kd_tree.insert(node)
+                self.__kd_tree.insert(node)
             except Exception as e:
                 print(f"Failed to insert key: {key} with value: {value}. Error: {e}\n")
         self.__test_inserts(currentlyGeneratedData)
@@ -33,7 +35,7 @@ class OpGenerator:
     
         num_duplicates = int(num_tuples * (duplicate_percentage / 100))
         num_unique = num_tuples - num_duplicates
-        unique_tuples = [(random.randint(0, 1000000000000), random.randint(0, 1000000000000)) for _ in range(num_unique)]
+        unique_tuples = [(random.randint(0, self.__maxsize), random.randint(0, self.__maxsize)) for _ in range(num_unique)]
         duplicate_tuples = [random.choice(unique_tuples) for _ in range(num_duplicates)]
         all_tuples = unique_tuples + duplicate_tuples
         random.shuffle(all_tuples)
@@ -42,16 +44,16 @@ class OpGenerator:
 
             
     def generate_searches(self):
-        random.seed(self.seed)
-        num_operations = len(self.generated_keys)
+        random.seed(self.__seed)
+        num_operations = len(self.__generated_keys)
         notFound = 0
         print(f"Generating search operations for all inserted keys:\n")
         for i in range(num_operations):
             try:
                 print(f"I'm currently generating search operation {i + 1}/{num_operations}\n")
-                key = self.generated_keys[random.randint(0, len(self.generated_keys) - 1)]
+                key = self.__generated_keys[random.randint(0, len(self.__generated_keys) - 1)]
                 print(f"Searching for key: {key}\n")
-                foundNodes = self.kd_tree.search(key)
+                foundNodes = self.__kd_tree.search(key)
                 if foundNodes is not None and foundNodes != []:
                     print(f"Found values:\n")
                     for node in foundNodes:
@@ -85,11 +87,11 @@ class OpGenerator:
                 print(f"Failed to find key: {key}. Error: {e}\n") """
                 
     def generate_deletes(self):
-        random.seed(self.seed)
-        num_operations = len(self.generated_keys)
-        self.all_nodes = self.kd_tree.get_all_nodes()
+        random.seed(self.__seed)
+        num_operations = len(self.__generated_keys)
+        self.__all_nodes = self.__kd_tree.get_all_nodes()
         nodes_to_delete = []
-        for node in self.all_nodes:
+        for node in self.__all_nodes:
             nodes_to_delete.append(node)
         not_deleted = 0
         not_found_after_delete = 0
@@ -99,12 +101,12 @@ class OpGenerator:
                 print(f"I'm currently generating delete operation {i + 1}/{num_operations}\n")
                 node_to_delete = nodes_to_delete[random.randint(0, len(nodes_to_delete) - 1)]
                 print(f"Deleting node with key: {node_to_delete.keys} and value: {node_to_delete.data}\n")
-                if self.kd_tree.delete(node_to_delete.keys, node_to_delete.data) == "Uzol nenájdený":
+                if self.__kd_tree.delete(node_to_delete.keys, node_to_delete.data) == "Uzol nenájdený":
                     not_deleted += 1
                 else:
                     nodes_to_delete.remove(node_to_delete)
                     for node in nodes_to_delete:
-                        if self.kd_tree.find_node(node) == None:
+                        if self.__kd_tree.find_node(node) == None:
                             not_found_after_delete += 1
                         
                         
@@ -125,7 +127,7 @@ class OpGenerator:
         numOfMistakes = 0
         for element in insertedData:
             found = 0
-            for node in self.kd_tree.get_all_nodes():
+            for node in self.__kd_tree.get_all_nodes():
                 if element == node.data:
                     found = 1
                 

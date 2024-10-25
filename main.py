@@ -1,23 +1,29 @@
 
 from DataStructure.KDNode import KDNode
-from GpsPosition import GPSPosition
-from Parcel import Parcel
+from Locations.GpsPosition import GPSPosition
+from Locations.Parcel import Parcel
 from DataStructure.KDTree import KDTree
-from Property import Property
+from Locations.Property import Property
 from DataGeneration.OperationGenerator import OpGenerator
+import customtkinter as csc
 
 def main():
     """ tuple1 = (23, "2d")
     tuple2 = (23, "23")
     if tuple1 == tuple2:
        print("Tuples are equal") """
-    #operationGenerator.generate_random_searches()
+    
+    
     operationGenerator = OpGenerator()
     operationGenerator.generate_inserts(10)
     operationGenerator.generate_searches()
-    operationGenerator.generate_deletes()
-
-    """ points = [
+    operationGenerator.generate_deletes() 
+    
+    csc.set_appearance_mode("dark")
+    csc.set_default_color_theme("dark-blue")
+    csc.CTk()
+    """
+    points = [
             (23, 35),
             (24, 36),
             (24, 40),

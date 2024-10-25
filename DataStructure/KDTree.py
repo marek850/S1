@@ -1,11 +1,14 @@
 
+from DataStructure.KDNode import KDNode
+
+
 class KDTree:
     def __init__(self, dimensions=2):
         self.dim = dimensions
         self.root = None
         
         
-    def insert(self, newNode):
+    def insert(self, newNode: KDNode):
         depth = 0
         dimension = 0
         parent = None
