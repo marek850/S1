@@ -1,8 +1,10 @@
 from DataStructure.KDTree import KDTree
 from DataStructure.KDNode import KDNode
+from Locations import Parcel
 from Locations.GpsPosition import GPSPosition
-from Locations.Property import Property
+from Locations.Property import Property, PropertyGui
 from DataGeneration.Generator import Generator
+from DataGeneration.OperationGenerator import OpGenerator
 
 class GeoApp:
     def __init__(self):
@@ -11,6 +13,7 @@ class GeoApp:
         self.__parcels_tree = KDTree()
         self.__all_tree = KDTree()  # Combined KDTree for properties and parcels
         self.__generator = Generator()
+        self.__op_generator = OpGenerator()
     @property
     def properties_tree(self):
         return self.__properties_tree
@@ -22,12 +25,11 @@ class GeoApp:
     @property
     def all_tree(self):
         return self.__all_tree
-    def add_property(self, property_number, description, start_latitude, start_longtitude,  end_latitude, end_longtitude):
-        if not (isinstance(start_latitude, list) and isinstance(start_longtitude, list) and isinstance(end_latitude, list) and isinstance(end_longtitude, list) and
-                len(start_latitude) == 2 and len(start_longtitude) == 2 and len(end_latitude) == 2 and len(end_longtitude) == 2):  # Check if coordinates are lists of two elements 
-            raise ValueError("Coordinates must be lists of two elements")
-        start_gps_position = GPSPosition(start_latitude[0], start_latitude[1], start_longtitude[0], start_longtitude[1])
-        end_gps_position = GPSPosition(end_latitude[0], end_latitude[1], end_longtitude[0], end_longtitude[1])
+    
+    def add_property(self, property_number, description, start_lat_dir, start_latitude, start_long_dir, start_longtitude,  end_lat_dir, \
+        end_latitude, end_long_dir, end_longtitude):
+        start_gps_position = GPSPosition(start_lat_dir, start_latitude, start_long_dir, start_longtitude)
+        end_gps_position = GPSPosition(end_lat_dir, end_latitude, end_long_dir, end_longtitude)
         id = self.__generator.generate_unique_id()
         new_property = Property(id, property_number, description, (start_gps_position, end_gps_position))
         start_node = KDNode((new_property.start_lat, new_property.start_lon), new_property)
@@ -37,72 +39,111 @@ class GeoApp:
         self.all_tree.insert(start_node)
         self.all_tree.insert(end_node)
         
-        #TODO Doplnit aktualizaciu referencii 
-        self._update_parcel_references(new_property)
+        self._update_parcel_references(new_property, start_node, end_node, "add")
+        
+        return True
+    
+    def insert_test(self, operation_number: int, percentage_of_duplicates: int):
+        self.__generator.generate_inserts(operation_number, percentage_of_duplicates)
         
 
-    def add_parcel(self, parcel_data):
-        """
-        Add a parcel to the system.
-        :param parcel_data: A dictionary containing parcel data (including id, description, gps_coordinates).
-        """
-        new_parcel = Parcel(parcel_data["id"], parcel_data["description"], parcel_data["gps_coordinates"], [])
-        self.parcels_tree.insert(new_parcel)
-        self.all_tree.insert(new_parcel)
-        self._update_property_references(new_parcel)
+    def add_parcel(self, parcel_number, description, start_latitude, start_longtitude,  end_latitude, end_longtitude):
+      
+        start_gps_position = GPSPosition(start_latitude[0], start_latitude[1], start_longtitude[0], start_longtitude[1])
+        end_gps_position = GPSPosition(end_latitude[0], end_latitude[1], end_longtitude[0], end_longtitude[1])
+        id = self.__generator.generate_unique_id()
+        new_parcel = Parcel(id, parcel_number, description, (start_gps_position, end_gps_position))
+        start_node = KDNode((new_parcel.start_lat, new_parcel.start_lon), new_parcel)
+        end_node = KDNode((new_parcel.end_lat, new_parcel.end_lon), new_parcel)
+        self.parcels_tree.insert(start_node)
+        self.parcels_tree.insert(end_node)
+        self.all_tree.insert(start_node)
+        self.all_tree.insert(end_node)
+        
+        self._update_property_references(new_parcel, start_node, end_node, "add")
 
-    def _update_parcel_references(self, property_obj):
-        """
-        Update the list of parcels that a property belongs to.
-        :param property_obj: The property object to be updated.
-        """
-        for parcel in self.parcels_tree.in_order_traversal():
-            if self._has_common_coordinates(parcel.gps_coordinates, property_obj.gps_coordinates):
-                property_obj.parcels.append(parcel)
-                parcel.properties.append(property_obj)
+    def _update_parcel_references(self, property, start_node, end_node, operation):
+        
+        start_node_layovers = self.parcels_tree.search(start_node.keys)
+        end_node_layovers = self.parcels_tree.search(end_node.keys)
+        if operation == "add":
+            for node in end_node_layovers:
+                property.add_parcel(node.data)
+                node.data.add_property(property)
+            for node in start_node_layovers:
+                property.add_parcel(node.data)
+                node.data.add_property(property)
+        else:
+            for node in end_node_layovers:
+                property.parcels.remove(node.data)
+                node.data.properties.remove(property)
+            for node in start_node_layovers:
+                property.parcels.remove(node.data)
+                node.data.properties.remove(property)
+            
+    
+    def _update_property_references(self, parcel, start_node, end_node, operation):
+        start_node_layovers = self.parcels_tree.search(start_node.keys)
+        end_node_layovers = self.parcels_tree.search(end_node.keys)
+        if operation == "add":
+            for node in end_node_layovers:
+                parcel.add_parcel(node.data)
+                node.data.add_property(parcel)
+            for node in start_node_layovers:
+                parcel.add_parcel(node.data)
+                node.data.add_property(parcel)
+        else:
+            for node in end_node_layovers:
+                parcel.properties.remove(node.data)
+                node.data.parcels.remove(parcel)
+            for node in start_node_layovers:
+                parcel.properties.remove(node.data)
+                node.data.parcels.remove(parcel)
+            
 
-    def _update_property_references(self, parcel_obj):
-        """
-        Update the list of properties that are located on the parcel.
-        :param parcel_obj: The parcel object to be updated.
-        """
-        for property in self.properties_tree.in_order_traversal():
-            if self._has_common_coordinates(parcel_obj.gps_coordinates, property.gps_coordinates):
-                parcel_obj.properties.append(property)
-                property.parcels.append(parcel_obj)
+    def search_properties_by_gps(self, gps_position: GPSPosition):
+        all_properties = self.properties_tree.search((gps_position.latitude_value, gps_position.longitude_value))
+        filtered_properties = []
+        for property in all_properties:
+            gui_property = PropertyGui(property.data)
+            if gui_property not in filtered_properties:
+                filtered_properties.append(gui_property)
+        
+        return filtered_properties
 
-    def _has_common_coordinates(self, gps_coordinates_1, gps_coordinates_2):
-        """
-        Check if two sets of GPS coordinates have any points in common.
-        :param gps_coordinates_1: First set of GPS coordinates.
-        :param gps_coordinates_2: Second set of GPS coordinates.
-        :return: True if they have at least one point in common, False otherwise.
-        """
-        return any(point in gps_coordinates_2 for point in gps_coordinates_1)
+    def search_parcels_by_gps(self, gps_position: GPSPosition):
+        all_parcels = self.properties_tree.search((gps_position.latitude_value, gps_position.longitude_value))
+        filtered_parcels = []
+        for property in all_parcels:
+            gui_property = Parcel.ParcelGui(property.data)
+            if gui_property not in filtered_parcels:
+                filtered_parcels.append(gui_property)
+        return filtered_parcels
 
-    def search_properties_by_gps(self, gps_position):
-        """
-        Search properties that match the given GPS position.
-        :param gps_position: GPS position to search for.
-        :return: List of properties matching the GPS position.
-        """
-        return self.properties_tree.search(gps_position)
-
-    def search_parcels_by_gps(self, gps_position):
-        """
-        Search parcels that match the given GPS position.
-        :param gps_position: GPS position to search for.
-        :return: List of parcels matching the GPS position.
-        """
-        return self.parcels_tree.search(gps_position)
-
-    def search_all_by_gps(self, gps_position):
-        """
-        Search all properties and parcels that match the given GPS position.
-        :param gps_position: GPS position to search for.
-        :return: List of properties and parcels matching the GPS position.
-        """
-        return self.all_tree.search(gps_position)
+    def search_all_by_gps(self, gps_position_1: GPSPosition, gps_position_2: GPSPosition):
+        all_properties_1 = self.all_tree.search((gps_position_1.latitude_value, gps_position_1.longitude_value))
+        all_properties_2 = self.all_tree.search((gps_position_2.latitude_value, gps_position_2.longitude_value))
+        filtered_objects = []
+        for property in all_properties_1:
+            if isinstance(property.data, Property):
+                gui_property = PropertyGui(property.data)
+                if gui_property not in filtered_objects:
+                    filtered_objects.append(gui_property)
+            else:
+                gui_parcel = Parcel.ParcelGui(property.data)
+                if gui_parcel not in filtered_objects:
+                    filtered_objects.append(gui_parcel)
+        for property in all_properties_2:
+            if isinstance(property.data, Property):
+                gui_property = PropertyGui(property.data)
+                if gui_property not in filtered_objects:
+                    filtered_objects.append(gui_property)
+            else:
+                gui_parcel = Parcel.ParcelGui(property.data)
+                if gui_parcel not in filtered_objects:
+                    filtered_objects.append(gui_parcel)
+        
+        return filtered_objects
 
     def search_all_by_gps_area(self, gps_position_1, gps_position_2):
         """

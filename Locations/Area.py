@@ -26,13 +26,13 @@ class Area(ABC):
         return self.boundary[0].latitude_value
     @property
     def start_lon(self): 
-        return self.boundary[0].longtitude_value
+        return self.boundary[0].longitude_value
     @property
     def end_lat(self): 
         return self.boundary[1].latitude_value
     @property
     def end_lon(self): 
-        return self.boundary[1].longtitude_value
+        return self.boundary[1].longitude_value
     @property
     def number(self):
         return self.__number   

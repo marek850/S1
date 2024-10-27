@@ -1,11 +1,13 @@
 
-from DataStructure.KDNode import KDNode
-from Locations.GpsPosition import GPSPosition
-from Locations.Parcel import Parcel
-from DataStructure.KDTree import KDTree
-from Locations.Property import Property
-from DataGeneration.OperationGenerator import OpGenerator
 import customtkinter as csc
+from DataGeneration.OperationGenerator import OpGenerator
+from DataStructure.KDNode import KDNode
+from GUI.MainApp import MainApp
+from GeoApp import GeoApp
+from Locations.GpsPosition import GPSPosition
+from Locations.Area import Area
+from Locations.Parcel import Parcel
+  
 
 def main():
     """ tuple1 = (23, "2d")
@@ -15,13 +17,49 @@ def main():
     
     
     operationGenerator = OpGenerator()
-    operationGenerator.generate_inserts(10)
+    operationGenerator.generate_inserts(5)
     operationGenerator.generate_searches()
-    operationGenerator.generate_deletes() 
+    operationGenerator.generate_deletes()  
+    """
+    csc.set_appearance_mode("System")  # Modes: "System" (default), "Dark", "Light"
+    csc.set_default_color_theme("blue")  # Themes: "blue" (default), "green", "dark-blue"
     
-    csc.set_appearance_mode("dark")
-    csc.set_default_color_theme("dark-blue")
-    csc.CTk()
+    app = MainApp()
+    app.mainloop() """
+    """ csc.set_appearance_mode("System")  # Modes: "System" (default), "Dark", "Light"
+    csc.set_default_color_theme("blue") """  # Themes: "blue" (default), "green", "dark-blue"
+    #geo_app = GeoApp()
+   # app = MainApp(geo_app)
+   # app.mainloop()
+    """ new_parcel = Parcel(5, 4, "description", ((GPSPosition('N',4,'E',5),GPSPosition('N',3,'E',8))))
+    node = KDNode((new_parcel.start_lat, new_parcel.start_lon), new_parcel)
+    node2 = KDNode((new_parcel.end_lat, new_parcel.end_lon), new_parcel)
+    nodes = [node, node2]
+    filtered_properties = []
+    for property in nodes:
+            if property.data not in filtered_properties:
+                filtered_properties.append(property.data)
+    print(filtered_properties) """
+    def login():
+        print("Login")
+        
+    """ frame = csc.CTkFrame(root)
+    frame.pack(pady=20, padx=60, fill="both", expand=True)
+    label = csc.CTkLabel(frame, text="Login", font=("Roboto", 24))
+    label.pack(pady=12, padx=10)
+    
+    entry1 = csc.CTkEntry(frame, font=("Roboto", 14), placeholder_text="Username")
+    entry1.pack(pady=12, padx=10)
+    
+    entry2 = csc.CTkEntry(frame, font=("Roboto", 14), placeholder_text="Username")
+    entry2.pack(pady=12, padx=10)
+    
+    button = csc.CTkButton(frame, text="Login", font=("Roboto", 14), command=login)
+    button.pack(pady=12, padx=10)
+    
+    checkbox = csc.CTkCheckBox(frame, text="Remember me", font=("Roboto", 14))
+    checkbox.pack(pady=12, padx=10) """
+    #root.mainloop()
     """
     points = [
             (23, 35),

@@ -1,12 +1,19 @@
 class  GPSPosition:
-    def __init__(self, latitude_direction, latitude_value, longitude_direction, longitude_value):
+    def __init__(self, latitude_direction: chr, latitude_value: float, longitude_direction: chr, longitude_value: float):
         self.__latitude_direction = latitude_direction    # 'N' alebo 'S'
         self.__latitude_value = latitude_value            # hodnota zemepisnej šírky
         self.__longitude_direction = longitude_direction  # 'E' alebo 'W'
         self.__longitude_value = longitude_value          # hodnota zemepisnej dĺžky
     
+    def __eq__(self, other):
+        if isinstance(other, GPSPosition):
+            if self.latitude_direction == other.latitude_direction and self.latitude_value == other.latitude_value and \
+            self.longitude_direction == other.longitude_direction and self.longitude_value == other.longitude_value:
+                return True
+        return False
+    
     def __str__(self):
-        return f"{self.__latitude_direction}{self.__latitude_value}, {self.__longitude_direction}{self.__longitude_value}"
+        return f"Sirka: {self.latitude_value}, Dlzka: {self.longitude_value}"
     @property
     def latitude_direction(self):
         return self.__latitude_direction

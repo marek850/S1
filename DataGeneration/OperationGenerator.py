@@ -4,16 +4,20 @@ from DataStructure.KDTree import KDTree
 from DataStructure.KDNode import KDNode
 
 class OpGenerator:
-    def __init__(self, seed=None):
+    def __init__(self,  seed=None):#parcel_tree, property_tree, all_tree,
         self.__max_size = sys.maxsize
-        self.__seed = seed if seed is not None else random.randint(1, self.__maxsize)
+        self.__seed = seed if seed is not None else random.randint(1, self.__max_size)
+        """ self.__parcel_tree = parcel_tree
+        self.__property_tree = property_tree
+        self.__all_tree = all_tree """
         self.__kd_tree = KDTree()
         self.__generated_keys = []
         self.__all_nodes = []
+        random.seed(8347542700107734526)
         
     
-    def generate_inserts(self, num_operations=1000, percentage_of_duplicates=30):
-        random.seed(self.__seed)
+    def generate_inserts(self, num_operations=1000, percentage_of_duplicates=30, type="property"):
+        
         currentlyGeneratedData = []
         keys = self.__generate_keys(num_operations, percentage_of_duplicates)
         print(f"Generating {num_operations} insert operations:\n")
@@ -35,7 +39,7 @@ class OpGenerator:
     
         num_duplicates = int(num_tuples * (duplicate_percentage / 100))
         num_unique = num_tuples - num_duplicates
-        unique_tuples = [(random.randint(0, self.__maxsize), random.randint(0, self.__maxsize)) for _ in range(num_unique)]
+        unique_tuples = [(random.randint(0, self.__max_size), random.randint(0, self.__max_size)) for _ in range(num_unique)]
         duplicate_tuples = [random.choice(unique_tuples) for _ in range(num_duplicates)]
         all_tuples = unique_tuples + duplicate_tuples
         random.shuffle(all_tuples)
@@ -44,7 +48,7 @@ class OpGenerator:
 
             
     def generate_searches(self):
-        random.seed(self.__seed)
+        
         num_operations = len(self.__generated_keys)
         notFound = 0
         print(f"Generating search operations for all inserted keys:\n")
@@ -87,7 +91,8 @@ class OpGenerator:
                 print(f"Failed to find key: {key}. Error: {e}\n") """
                 
     def generate_deletes(self):
-        random.seed(self.__seed)
+        
+        print(self.__seed)
         num_operations = len(self.__generated_keys)
         self.__all_nodes = self.__kd_tree.get_all_nodes()
         nodes_to_delete = []

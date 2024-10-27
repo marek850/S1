@@ -10,6 +10,36 @@ class KDTree:
         
     def insert(self, newNode: KDNode):
         depth = 0
+        current = self.root
+        parent = None
+
+        # Iterácia cez strom až k miestu, kde sa nový uzol pridá
+        while current is not None:
+            dimension = depth % self.dim
+            parent = current
+            
+            # Rozhodovanie, do ktorého podstromu sa má ísť
+            if newNode.keys[dimension] <= current.keys[dimension]:
+                current = current.left
+            else:
+                current = current.right
+
+            depth += 1
+
+        # Nastavenie rodiča nového uzla
+        newNode.parent = parent
+        newNode.dim = depth % self.dim
+
+        # Vkladanie uzla
+        if parent is None:
+            self.root = newNode  # Strom je prázdny, nový uzol sa stáva koreňom
+        else:
+            dimension = (depth - 1) % self.dim  # Dimenzia rodiča
+            if newNode.keys[dimension] <= parent.keys[dimension]:
+                parent.left = newNode
+            else:
+                parent.right = newNode
+        """ depth = 0
         dimension = 0
         parent = None
         current = self.root
@@ -29,9 +59,9 @@ class KDTree:
             newNode.dim = depth % self.dim
         else:
             parent.right = newNode
-            newNode.dim = depth  % self.dim
+            newNode.dim = depth  % self.dim """
      
-    def search(self, target_keys):
+    def search(self, target_keys: tuple):
         depth = 0
         dimension = 0
         foundNodes = []
@@ -63,9 +93,128 @@ class KDTree:
     
     def delete(self, key, data):    
         def swap_nodes(node1, node2):
+            """ node_1_temp = node1
+            node_2_temp = node2
             node1_parent_t, node1_left_t, node1_right_t,node1_dim_t = node1.parent, node1.left, node1.right, node1.dim
             node2_parent_t, node2_left_t, node2_right_t,node2_dim_t = node2.parent, node2.left, node2.right, node2.dim
-            if node2.parent == node1:
+            #node2 je list a node1 nie je priamo nad nim ale niekde v strome
+            if node2.left == None and node2.right == None:
+                #presun node1 na miesto node2
+                node1.parent = node2_parent_t
+                node1.left = node2_left_t
+                node1.right = node2_right_t
+                
+                if node2_parent_t.left == node_2_temp:
+                    node2_parent_t.left = node_1_temp
+                elif node2_parent_t.right == node_2_temp:
+                    node2_parent_t.right = node_1_temp
+                    
+                #presun node2 na miesto node1
+                node2.parent = node1_parent_t
+                node2.left = node1_left_t
+                node2.right = node1_right_t
+                if node2.parent == None:
+                    self.root = node2
+                else:
+                    if node1_parent_t.left == node_1_temp:
+                        node1_parent_t.left = node_2_temp
+                    elif node1_parent_t.right == node_1_temp:
+                        node1_parent_t.right = node_2_temp
+                if node_1_temp.left is not None:
+                    node_1_temp.left.parent = node_2_temp
+                if node_1_temp.right is not None:
+                    node_1_temp.right.parent = node_2_temp
+            elif node1.left != node2 and node1.right != node2:
+                #presun node1 na miesto node2
+                node1.parent = node2_parent_t
+                node1.left = node2_left_t
+                node1.right = node2_right_t
+                if node1.left is not None:
+                    node1.left.parent = node1
+                if node1.right is not None:
+                    node1.right.parent = node1
+                if node1.parent.left == node2:
+                    node1.parent.left = node1
+                elif node1.parent.right == node2:
+                    node1.parent.right = node1
+                #presun node2 na miesto node1
+                node2.parent = node1_parent_t
+                node2.left = node1_left_t
+                node2.right = node1_right_t
+                if node2.parent == None:
+                    self.root = node2
+                else:
+                    if node2.parent.left == node1:
+                        node2.parent.left = node2
+                    elif node2.parent.right == node1:
+                        node2.parent.right = node2
+                if node2.left is not None:
+                    node2.left.parent = node2
+                if node2.right is not None:
+                    node2.right.parent = node2
+            else:
+                #presun node1 na miesto node2
+                node1.parent = node2_parent_t
+                node1.left = node2_left_t
+                node1.right = node2_right_t
+                if node1.left is not None:
+                    node1.left.parent = node1
+                if node1.right is not None:
+                    node1.right.parent = node1
+                if node1.parent.left == node_2_temp:
+                    node1.parent.left = node_1_temp
+                #presun node2 na miesto node1
+                node2.parent = node1_parent_t
+                node2.left = node1_left_t
+                node2.right = node1_right_t
+                if node2.parent == None:
+                    self.root = node2
+                else:
+                    if node2.parent.left == node_1_temp:
+                        node2.parent.left = node2
+                    elif node2.parent.right == node_1_temp:
+                        node2.parent.right = node2 """
+            """ node_1_temp = node1
+            node_2_temp = node2
+            node1_parent_t, node1_left_t, node1_right_t,node1_dim_t = node1.parent, node1.left, node1.right, node1.dim
+            node2_parent_t, node2_left_t, node2_right_t,node2_dim_t = node2.parent, node2.left, node2.right, node2.dim    """
+            node_1_temp = node1
+            node_2_temp = node2
+            p1, l1, r1,node1_dim_t = node1.parent, node1.left, node1.right, node1.dim
+            p2, l2, r2,node2_dim_t = node2.parent, node2.left, node2.right, node2.dim  
+            
+            node1.left = l2
+            node2.left = l1
+            if l1 is not None:
+                node2.left.parent = node2
+            if l2 is not None:
+                node1.left.parent = node1
+            
+            node1.right = r2
+            node2.right = r1
+            
+            if r1 is not None:
+                node2.right.parent = node2
+            if r2 is not None:
+                node1.right.parent = node1
+            
+            node1.parent = p2
+            node2.parent = p1
+            
+            if p1 is not None and p1.left == node1: 
+                node2.parent.left = node2
+            elif p1 is not None and p1.right == node1:
+                node2.parent.right = node2
+                
+            if p2 is not None and p2.left == node2:
+                node1.parent.left = node1
+            elif p2 is not None and p2.right == node2:
+                node1.parent.right = node1
+            
+            if node2.parent is None:
+                self.root = node2
+            
+            """ if node2.parent == node1:
                 node2.parent = node1_parent_t
                 node1.parent = node2
                 if node1.left == node2:
@@ -89,9 +238,9 @@ class KDTree:
                 if node2.parent is None:
                     self.root = node2
                 else:
-                    if node2.parent.left == node1:
+                    if node2.parent != None and node2.parent.left == node1:
                         node2.parent.left = node2
-                    if node2.parent.right == node1:
+                    if node2.parent != None and node2.parent.right == node1:
                         node2.parent.right = node2
                 
             else:
@@ -109,16 +258,16 @@ class KDTree:
                     node2.left.parent = node2
                 if node2.right is not None:
                     node2.right.parent = node2
-                if node2.parent.left == node1:
+                if node2.parent != None and node2.parent.left == node1:
                     node2.parent.left = node2
-                elif node2.parent.right == node1:
+                elif node2.parent != None and node2.parent.right == node1:
                     node2.parent.right = node2
-                if node1.parent.left == node2:
+                if node1.parent != None and node1.parent.left == node2:
                     node1.parent.left = node1
-                elif node1.parent.right == node2:
+                elif node1.parent != None and node1.parent.right == node2:
                     node1.parent.right = node1
                 if node2.parent is None:
-                    self.root = node2
+                    self.root = node2 """
             node2.dim = node1_dim_t
             node1.dim = node2_dim_t    
                                     
@@ -230,6 +379,7 @@ class KDTree:
         return max_node
        
     def __find_subtree_min(self,subtree_root, dimension):
+       
         if subtree_root is None:
             return None
         
