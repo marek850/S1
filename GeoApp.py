@@ -1,6 +1,6 @@
 from DataStructure.KDTree import KDTree
 from DataStructure.KDNode import KDNode
-from Locations import Parcel
+from Locations.Parcel import Parcel, ParcelGui
 from Locations.GpsPosition import GPSPosition
 from Locations.Property import Property, PropertyGui
 from DataGeneration.Generator import Generator
@@ -122,7 +122,6 @@ class GeoApp:
 
     def search_all_by_gps(self, gps_position_1: GPSPosition, gps_position_2: GPSPosition):
         all_properties_1 = self.all_tree.search((gps_position_1.latitude_value, gps_position_1.longitude_value))
-        all_properties_2 = self.all_tree.search((gps_position_2.latitude_value, gps_position_2.longitude_value))
         filtered_objects = []
         for property in all_properties_1:
             if isinstance(property.data, Property):
@@ -130,95 +129,7 @@ class GeoApp:
                 if gui_property not in filtered_objects:
                     filtered_objects.append(gui_property)
             else:
-                gui_parcel = Parcel.ParcelGui(property.data)
+                gui_parcel = ParcelGui(property.data)
                 if gui_parcel not in filtered_objects:
                     filtered_objects.append(gui_parcel)
-        for property in all_properties_2:
-            if isinstance(property.data, Property):
-                gui_property = PropertyGui(property.data)
-                if gui_property not in filtered_objects:
-                    filtered_objects.append(gui_property)
-            else:
-                gui_parcel = Parcel.ParcelGui(property.data)
-                if gui_parcel not in filtered_objects:
-                    filtered_objects.append(gui_parcel)
-        
         return filtered_objects
-
-    def search_all_by_gps_area(self, gps_position_1, gps_position_2):
-        """
-        Search all properties and parcels within a given rectangular area defined by two GPS positions.
-        :param gps_position_1: First GPS position.
-        :param gps_position_2: Second GPS position.
-        :return: List of properties and parcels within the area.
-        """
-        matching_properties = self.properties_tree.search_range(gps_position_1, gps_position_2)
-        matching_parcels = self.parcels_tree.search_range(gps_position_1, gps_position_2)
-        return matching_properties + matching_parcels
-
-    def remove_property_by_gps(self, gps_position):
-        """
-        Remove property at the specified GPS position.
-        :param gps_position: GPS position to identify the property to be removed.
-        """
-        properties_to_remove = self.search_properties_by_gps(gps_position)
-        for property_obj in properties_to_remove:
-            self.properties_tree.delete(property_obj)
-            self.all_tree.delete(property_obj)
-        for parcel in property_obj.parcels:
-                parcel.properties.remove(property_obj)
-
-    def remove_parcel_by_gps(self, gps_position):
-        """
-        Remove parcel at the specified GPS position.
-        :param gps_position: GPS position to identify the parcel to be removed.
-        """
-        parcels_to_remove = self.search_parcels_by_gps(gps_position)
-        for parcel_obj in parcels_to_remove:
-            self.parcels_tree.delete(parcel_obj)
-            self.all_tree.delete(parcel_obj)
-        for property in parcel_obj.properties:
-                property.parcels.remove(parcel_obj)
-
-    def edit_property_by_gps(self, gps_position, updated_data):
-        """
-        Edit the property at the specified GPS position.
-        :param gps_position: GPS position to identify the property to be edited.
-        :param updated_data: A dictionary containing updated property data.
-        """
-        properties_to_edit = self.search_properties_by_gps(gps_position)
-        for property_obj in properties_to_edit:
-            property_obj.update(updated_data)
-            # Update KDTree since coordinates might have changed
-            self.properties_tree.delete(property_obj.gps_coordinates)
-            self.all_tree.delete(property_obj.gps_coordinates)
-            self.properties_tree.insert(property_obj)
-            self.all_tree.insert(property_obj)
-            self._update_parcel_references(property_obj)
-
-    def edit_parcel_by_gps(self, gps_position, updated_data):
-        """
-        Edit the parcel at the specified GPS position.
-        :param gps_position: GPS position to identify the parcel to be edited.
-        :param updated_data: A dictionary containing updated parcel data.
-        """
-        parcels_to_edit = self.search_parcels_by_gps(gps_position)
-        for parcel_obj in parcels_to_edit:
-            parcel_obj.update(updated_data)
-            # Update KDTree since coordinates might have changed
-            self.parcels_tree.delete(parcel_obj.gps_coordinates)
-            self.all_tree.delete(parcel_obj.gps_coordinates)
-            self.parcels_tree.insert(parcel_obj)
-            self.all_tree.insert(parcel_obj)
-            self._update_property_references(parcel_obj)
-
-    def display_all_data(self):
-        """
-        Display all properties and parcels.
-        """
-        print("Properties:")
-        for property_obj in self.properties_tree.get_all():
-            print(property_obj)
-        print("\nParcels:")
-        for parcel_obj in self.parcels_tree.get_all():
-            print(parcel_obj)

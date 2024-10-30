@@ -13,15 +13,14 @@ class Property(Area):
             if self.unique_id == other.unique_id:
                 return True
         return False  
-        
+    def __str__(self):      
+        return f"Nehnutelnost: Cislo:{self.__property_number}, Popis: {self.description} Zaciatok: {self.boundary[0]}, Koniec: {self.boundary[1]}\n"    
     def add_parcel(self, parcel):
         for p in self.parcels:
             if p == parcel:
                 return
         self.parcels.append(parcel)
         
-    def __str__(self):
-        return f"Nehnutelnost: {self.__property_number}: {self.__description}"
     @property
     def property_number(self):
         return self.__property_number

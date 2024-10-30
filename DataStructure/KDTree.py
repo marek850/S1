@@ -6,6 +6,7 @@ class KDTree:
     def __init__(self, dimensions=2):
         self.dim = dimensions
         self.root = None
+        self.size = 0
         
         
     def insert(self, newNode: KDNode):
@@ -39,6 +40,7 @@ class KDTree:
                 parent.left = newNode
             else:
                 parent.right = newNode
+        self.size += 1
         """ depth = 0
         dimension = 0
         parent = None
@@ -96,8 +98,8 @@ class KDTree:
             """ node_1_temp = node1
             node_2_temp = node2
             node1_parent_t, node1_left_t, node1_right_t,node1_dim_t = node1.parent, node1.left, node1.right, node1.dim
-            node2_parent_t, node2_left_t, node2_right_t,node2_dim_t = node2.parent, node2.left, node2.right, node2.dim
-            #node2 je list a node1 nie je priamo nad nim ale niekde v strome
+            node2_parent_t, node2_left_t, node2_right_t,node2_dim_t = node2.parent, node2.left, node2.right, node2.dim """
+            """ #node2 je list a node1 nie je priamo nad nim ale niekde v strome
             if node2.left == None and node2.right == None:
                 #presun node1 na miesto node2
                 node1.parent = node2_parent_t
@@ -174,47 +176,79 @@ class KDTree:
                         node2.parent.left = node2
                     elif node2.parent.right == node_1_temp:
                         node2.parent.right = node2 """
-            """ node_1_temp = node1
-            node_2_temp = node2
-            node1_parent_t, node1_left_t, node1_right_t,node1_dim_t = node1.parent, node1.left, node1.right, node1.dim
-            node2_parent_t, node2_left_t, node2_right_t,node2_dim_t = node2.parent, node2.left, node2.right, node2.dim    """
+            """ if node1.data == "beERMwBYBV" or node2.data == "beERMwBYBV":
+                print("to je on")
             node_1_temp = node1
             node_2_temp = node2
-            p1, l1, r1,node1_dim_t = node1.parent, node1.left, node1.right, node1.dim
-            p2, l2, r2,node2_dim_t = node2.parent, node2.left, node2.right, node2.dim  
+            node1_parent_t, node1_left_t, node1_right_t,node1_dim_t = node1.parent, node1.left, node1.right, node1.dim
+            node2_parent_t, node2_left_t, node2_right_t,node2_dim_t = node2.parent, node2.left, node2.right, node2.dim 
+            node_1_temp = node1
+            node_2_temp = node2
+            node1_parent_t, node1_left_t, node1_right_t,node1_dim_t = node1.parent, node1.left, node1.right, node1.dim
+            node2_parent_t, node2_left_t, node2_right_t,node2_dim_t = node2.parent, node2.left, node2.right, node2.dim   
+            node_1_temp = node1
+            node_2_temp = node2
+            node1_dim_t = node1.dim
+            node2_dim_t = node2.dim
+            l1= node1.left
+            l2= node2.left
             
             node1.left = l2
-            node2.left = l1
+            if l1 == node2:
+                node2.left = node1
+            else:
+                node2.left = l1
             if l1 is not None:
                 node2.left.parent = node2
             if l2 is not None:
                 node1.left.parent = node1
+            r1=node1.right
+            r2=node2.right
             
             node1.right = r2
-            node2.right = r1
+            if r1 == node2:
+                node2.right = node1
+            else:
+                node2.right = r1
             
             if r1 is not None:
                 node2.right.parent = node2
             if r2 is not None:
                 node1.right.parent = node1
+            p1= node1.parent
+            p2= node2.parent
+            #ttttt
+            if node1.parent == node1:
+                node1.parent = node2
+            else:
+                node1.parent = node2_parent_t
+            node2.parent = node1_parent_t
             
-            node1.parent = p2
-            node2.parent = p1
-            
-            if p1 is not None and p1.left == node1: 
+            if node1_parent_t is not None and node1_parent_t.left == node1: 
                 node2.parent.left = node2
-            elif p1 is not None and p1.right == node1:
+            elif node1_parent_t is not None and node1_parent_t.right == node1:
                 node2.parent.right = node2
                 
-            if p2 is not None and p2.left == node2:
+            if node2_parent_t is not None and node2_parent_t.left == node2:
                 node1.parent.left = node1
-            elif p2 is not None and p2.right == node2:
+            elif node2_parent_t is not None and node2_parent_t.right == node2:
                 node1.parent.right = node1
+            
+            if node2.right == node2:
+                node2.right = node1
+                node2.right.parent = node2
+            if node2.left == node2:
+                node2.left = node1
+                node2.left.parent = node2 
             
             if node2.parent is None:
                 self.root = node2
+            node2.dim = node1_dim_t
+            node1.dim = node2_dim_t  """
             
-            """ if node2.parent == node1:
+            node1_parent_t, node1_left_t, node1_right_t,node1_dim_t = node1.parent, node1.left, node1.right, node1.dim
+            node2_parent_t, node2_left_t, node2_right_t,node2_dim_t = node2.parent, node2.left, node2.right, node2.dim 
+            if node2.parent == node1:
                 node2.parent = node1_parent_t
                 node1.parent = node2
                 if node1.left == node2:
@@ -267,9 +301,58 @@ class KDTree:
                 elif node1.parent != None and node1.parent.right == node2:
                     node1.parent.right = node1
                 if node2.parent is None:
-                    self.root = node2 """
+                    self.root = node2
             node2.dim = node1_dim_t
-            node1.dim = node2_dim_t    
+            node1.dim = node2_dim_t
+        """ povodna_uroven = node2.dim
+            povodny_otec = node2.parent
+            povodny_lavy_syn = node2.left
+            povodny_pravy_syn = node2.right
+
+            # nastavenie nahradneho node2u na poziciu vymazavaneho node2u
+            if node1.parent is not None:
+                if node1.left == node1:
+                    node1.left = node2
+                elif node1.right == node1:
+                    node1.right = node2
+            else:
+                self.root = node2
+            node2.dim = node1.dim
+            node2.parent = node1.parent
+            if node1.left is node2:
+                node2.left = node1
+            else:
+                node2.left = node1.left
+
+            if node1.right is node2:
+                node2.right = node1
+            else:
+                node2.right = node1.right
+
+            if node1.left is not None and node1.left is not node2:
+                node1.left.parent = node2
+            if node1.right is not None and node1.right is not node2:
+                node1.right.parent = node2
+
+            # nastavenie vymazavaneho node2u na poziciu nahradneho node2u
+            if povodny_otec is node1:
+                node1.parent = node2
+            else:
+                node1.parent = povodny_otec
+                if povodny_otec is not None:
+                    if node1.left == node2:
+                        node1.left = node1
+                    elif node1.right == node2:
+                        node1.right = node1
+            node1.dim = povodna_uroven
+            node1.left = povodny_lavy_syn
+            node1.right = povodny_pravy_syn
+
+            if povodny_lavy_syn is not None:
+                povodny_lavy_syn.parent = node1
+            if povodny_pravy_syn is not None:
+                povodny_pravy_syn.parent = node1 """
+               
                                     
         current = self.root
         parent = None
@@ -298,50 +381,58 @@ class KDTree:
         if current.left is None and current.right is None:
             if parent is None:
                 self.root = None
+                self.size -= 1
             elif parent.left == current:
                 parent.left = None
+                self.size -= 1
             else:
                 parent.right = None
+                self.size -= 1
             return
 
         
         duplicates_to_remove = []
         to_insert = []
         while True:
+            if duplicates_to_remove != []:  
+                current = duplicates_to_remove.pop()
+                to_insert.append(current)
             # Ak uzol nie je list, najdeme nahradny uzol
             while current.left is not None or current.right is not None:
                     
                 if current.left is not None:
                     replacement = self.__find_subtree_max(current.left, current.dim)
                     swap_nodes(current, replacement)
+                    
     
                 else:
                     replacement = self.__find_subtree_min(current.right, current.dim)
-                    rep_duplicates = self.__find_duplicates_by_dimension(current.right, current.dim)
+                    swap_nodes(current, replacement)
+                    rep_duplicates = self.__find_duplicates_by_dimension(replacement, replacement.dim)
                     for duplicate in rep_duplicates:
                         duplicates_to_remove.append(duplicate)
-                    swap_nodes(current, replacement)
+                    
+                    
                                               
             parent = current.parent
             if parent is None:
                 self.root = None
+                self.size -= 1
             elif parent.left == current:
                 parent.left = None
+                self.size -= 1
             else:
                 parent.right = None
-            if duplicates_to_remove != []:
-                current = duplicates_to_remove.pop()
-                to_insert.append(current)
-            else:
-                if to_insert != []:
-                    for node in to_insert:
-                        self.insert(node)
+                self.size -= 1
+            if duplicates_to_remove == []:
                 break
-            
+        if to_insert != []:
+                for node in to_insert:
+                    self.insert(node)    
     
             
     def __find_duplicates_by_dimension(self, node, dimension):
-        duplicates = []
+        """ duplicates = []
         stack = [node]
         
         while stack:
@@ -353,6 +444,24 @@ class KDTree:
             stack.append(current.left)
             stack.append(current.right)
         
+        return duplicates """
+        duplicates = []
+        current = node.right
+        temp = []
+        
+        while True:
+            if current is not None:
+                temp.append(current)
+                current = current.left
+            else:
+                if not temp:
+                    break
+                
+                current = temp.pop()
+                
+                if  current.keys[dimension] == node.keys[dimension]:
+                    duplicates.append(current)
+                current = current.right
         return duplicates
         
     

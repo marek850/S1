@@ -17,7 +17,7 @@ def main():
     
     
     operationGenerator = OpGenerator()
-    operationGenerator.generate_inserts(5)
+    operationGenerator.generate_inserts(10)
     operationGenerator.generate_searches()
     operationGenerator.generate_deletes()  
     """
@@ -28,9 +28,9 @@ def main():
     app.mainloop() """
     """ csc.set_appearance_mode("System")  # Modes: "System" (default), "Dark", "Light"
     csc.set_default_color_theme("blue") """  # Themes: "blue" (default), "green", "dark-blue"
-    #geo_app = GeoApp()
-   # app = MainApp(geo_app)
-   # app.mainloop()
+    geo_app = GeoApp()
+    app = MainApp(geo_app)
+    app.mainloop()
     """ new_parcel = Parcel(5, 4, "description", ((GPSPosition('N',4,'E',5),GPSPosition('N',3,'E',8))))
     node = KDNode((new_parcel.start_lat, new_parcel.start_lon), new_parcel)
     node2 = KDNode((new_parcel.end_lat, new_parcel.end_lon), new_parcel)
