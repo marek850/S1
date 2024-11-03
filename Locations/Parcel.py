@@ -20,8 +20,8 @@ class Parcel(Area):
         self.properties.append(property)
         
     def __str__(self):
-        boundary_str = f"Boundary: [{self.__boundary[0]}, {self.__boundary[1]}]"
-        return f"Parcel {self.__parcel_number}: {self.__description}, {boundary_str}, Properties: {len(self.__properties)}"
+        boundary_str = f"Hranice: [{self.boundary[0]}, {self.boundary[1]}]"
+        return f"Parcela {self.__parcel_number}: {self.description}, {boundary_str}"
     @property
     def parcel_number(self):
         return self.__parcel_number
@@ -32,16 +32,24 @@ class Parcel(Area):
 class ParcelGui():
     def __init__(self, parcel):
         self.__description = parcel.description
-        self.__property_number = parcel.parcel_number
+        self.__parcel_number = parcel.parcel_number
         self.__unique_id = parcel.unique_id
         self.__boundary = parcel.boundary
+        self.__properties = parcel.properties
     def __eq__(self, other):
         if isinstance(other, ParcelGui):
             if self.unique_id == other.unique_id:
                 return True
         return False  
     def __str__(self):      
-        return f"Parcela: Cislo:{self.parcel_number}, Popis: {self.__description} Zaciatok: {self.__boundary[0]}, Koniec: {self.__boundary[1]}\n"
+        return f"Parcela: Cislo:{self.__parcel_number}, Popis: {self.__description} Zaciatok: {self.__boundary[0]}, Koniec: {self.__boundary[1]}\n"
+    def __str__(self):
+        properties_str = "\n".join([f"{property}" for property in self.__properties])
+        return (
+            f"Parcela: Cislo: {self.__parcel_number}, Popis: {self.__description}, "
+            f"Zaciatok: {self.__boundary[0]}, Koniec: {self.__boundary[1]}\n"
+            f"Nehnutelnosti na parcele:\n{properties_str}"
+        )
     @property
     def description(self):
         return self.__description

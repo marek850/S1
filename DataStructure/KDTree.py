@@ -10,16 +10,15 @@ class KDTree:
         
         
     def insert(self, newNode: KDNode):
-        depth = 0
+        """ depth = 0
         current = self.root
         parent = None
 
-        # Iterácia cez strom až k miestu, kde sa nový uzol pridá
         while current is not None:
             dimension = depth % self.dim
             parent = current
             
-            # Rozhodovanie, do ktorého podstromu sa má ísť
+            
             if newNode.keys[dimension] <= current.keys[dimension]:
                 current = current.left
             else:
@@ -27,21 +26,20 @@ class KDTree:
 
             depth += 1
 
-        # Nastavenie rodiča nového uzla
         newNode.parent = parent
         newNode.dim = depth % self.dim
 
-        # Vkladanie uzla
+        
         if parent is None:
-            self.root = newNode  # Strom je prázdny, nový uzol sa stáva koreňom
+            self.root = newNode  
         else:
-            dimension = (depth - 1) % self.dim  # Dimenzia rodiča
+            dimension = (depth - 1) % self.dim  
             if newNode.keys[dimension] <= parent.keys[dimension]:
                 parent.left = newNode
             else:
-                parent.right = newNode
-        self.size += 1
-        """ depth = 0
+                parent.right = newNode """
+        #self.size += 1
+        depth = 0
         dimension = 0
         parent = None
         current = self.root
@@ -61,7 +59,8 @@ class KDTree:
             newNode.dim = depth % self.dim
         else:
             parent.right = newNode
-            newNode.dim = depth  % self.dim """
+            newNode.dim = depth  % self.dim
+        self.size += 1
      
     def search(self, target_keys: tuple):
         depth = 0
@@ -77,7 +76,24 @@ class KDTree:
             else:
                 current_node = current_node.right
             depth += 1
-        return foundNodes      
+        return foundNodes
+          
+    def search(self, target_keys: tuple, data):
+        depth = 0
+        dimension = 0
+        found_node = None
+        current_node = self.root
+        while current_node is not None:
+            dimension = depth % self.dim
+            if target_keys == current_node.keys and data == current_node.data:
+                found_node = current_node
+            if target_keys[dimension] <= current_node.keys[dimension]:
+                current_node = current_node.left
+            else:
+                current_node = current_node.right
+            depth += 1
+        return found_node
+    
     def find_node(self,node):
         depth = 0
         dimension = 0
@@ -93,6 +109,16 @@ class KDTree:
             depth += 1
         return None    
     
+    def update(self, key, data, new_key, new_data):
+        node_to_update = self.search(key, data)
+        if node_to_update is not None:
+            if new_key is  None:
+                node_to_update.data = new_data
+            else:
+                self.delete(key, data)
+                self.insert(KDNode(new_key, new_data))
+        
+        
     def delete(self, key, data):    
         def swap_nodes(node1, node2):
             """ node_1_temp = node1
@@ -359,7 +385,6 @@ class KDTree:
         depth = 0
         currentDimension = 0       
 
-        # Najdeme uzol ktory chceme vymazat
         while current is not None:
             currentDimension = depth % self.dim
             if current.keys == key and current.data == data:
@@ -373,11 +398,10 @@ class KDTree:
                 current = current.right
             depth += 1
 
-        # Ak uzol neexistuje vratime chybu
         if current is None:
             return "Uzol nenájdený"
         parent = current.parent
-        # Ak je uzol list vymazeme ho priamo
+
         if current.left is None and current.right is None:
             if parent is None:
                 self.root = None
@@ -397,14 +421,13 @@ class KDTree:
             if duplicates_to_remove != []:  
                 current = duplicates_to_remove.pop()
                 to_insert.append(current)
-            # Ak uzol nie je list, najdeme nahradny uzol
+         
             while current.left is not None or current.right is not None:
                     
                 if current.left is not None:
                     replacement = self.__find_subtree_max(current.left, current.dim)
                     swap_nodes(current, replacement)
                     
-    
                 else:
                     replacement = self.__find_subtree_min(current.right, current.dim)
                     swap_nodes(current, replacement)

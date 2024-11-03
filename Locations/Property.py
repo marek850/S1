@@ -41,13 +41,20 @@ class PropertyGui():
         self.__property_number = property.property_number
         self.__unique_id = property.unique_id
         self.__boundary = property.boundary
+        self.__parcels = property.parcels
     def __eq__(self, other):
         if isinstance(other, PropertyGui):
             if self.unique_id == other.unique_id:
                 return True
         return False  
-    def __str__(self):      
-        return f"Nehnutelnost: Cislo:{self.__property_number}, Popis: {self.__description} Zaciatok: {self.__boundary[0]}, Koniec: {self.__boundary[1]}\n"
+    
+    def __str__(self):
+        parcels_str = "\n".join([f"\{parcel}" for parcel in self.__parcels])
+        return (
+            f"Nehnutelnost: Cislo: {self.__property_number}, Popis: {self.__description}, "
+            f"Zaciatok: {self.__boundary[0]}, Koniec: {self.__boundary[1]}\n"
+            f"Parcely:\n{parcels_str}"
+        )
     @property
     def description(self):
         return self.__description

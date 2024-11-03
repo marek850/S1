@@ -7,6 +7,8 @@ from GeoApp import GeoApp
 from Locations.GpsPosition import GPSPosition
 from Locations.Area import Area
 from Locations.Parcel import Parcel
+
+
   
 
 def main():
@@ -28,6 +30,8 @@ def main():
     app.mainloop() """
     """ csc.set_appearance_mode("System")  # Modes: "System" (default), "Dark", "Light"
     csc.set_default_color_theme("blue") """  # Themes: "blue" (default), "green", "dark-blue"
+
+    # Spusti GeoApp vo vlákne
     geo_app = GeoApp()
     app = MainApp(geo_app)
     app.mainloop()
