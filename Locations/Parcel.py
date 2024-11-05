@@ -21,7 +21,7 @@ class Parcel(Area):
         
     def __str__(self):
         boundary_str = f"Hranice: [{self.boundary[0]}, {self.boundary[1]}]"
-        return f"Parcela {self.__parcel_number}: {self.description}, {boundary_str}"
+        return f"Parcela {self.__parcel_number}: {self.description}, Zaciatok: {self.boundary[0]}, Koniec: {self.boundary[1]}\n"
     @property
     def parcel_number(self):
         return self.__parcel_number

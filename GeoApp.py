@@ -4,7 +4,8 @@ from Locations.Parcel import Parcel, ParcelGui
 from Locations.GpsPosition import GPSPosition
 from Locations.Property import Property, PropertyGui
 from DataGeneration.Generator import Generator
-from DataGeneration.OperationGenerator import OpGenerator
+from DataGeneration.Tester import OpGenerator
+from DataGeneration.DataGenerator import DataGenerator
 
 class GeoApp:
     def __init__(self):
@@ -13,7 +14,7 @@ class GeoApp:
         self.__parcels_tree = KDTree()
         self.__all_tree = KDTree()  # Combined KDTree for properties and parcels
         self.__generator = Generator()
-        self.__op_generator = OpGenerator()
+        self.__data_generator = DataGenerator(self.__parcels_tree, self.__properties_tree, self.__all_tree, self)
     @property
     def properties_tree(self):
         return self.__properties_tree
@@ -36,12 +37,11 @@ class GeoApp:
         end_node = KDNode((new_property.end_lat, new_property.end_lon), new_property)
         self.properties_tree.insert(start_node)
         self.properties_tree.insert(end_node)
-        #self.all_tree.insert(start_node)
-        #self.all_tree.insert(end_node)
+        self.all_tree.insert(KDNode((new_property.start_lat, new_property.start_lon), new_property))
+        self.all_tree.insert(KDNode((new_property.end_lat, new_property.end_lon), new_property))
         print(f"Property {new_property} added")
         
-        self._update_parcel_references(new_property, start_node, "add")
-        self._update_parcel_references(new_property, end_node, "add")
+        self.update_parcel_references(new_property, start_node, end_node, "add")
         
         return True
     
@@ -60,17 +60,20 @@ class GeoApp:
         end_node = KDNode((new_parcel.end_lat, new_parcel.end_lon), new_parcel)
         self.parcels_tree.insert(start_node)
         self.parcels_tree.insert(end_node)
-        #self.all_tree.insert(start_node)
-        #self.all_tree.insert(end_node)
+        self.all_tree.insert(KDNode((new_parcel.start_lat, new_parcel.start_lon), new_parcel))
+        self.all_tree.insert(KDNode((new_parcel.end_lat, new_parcel.end_lon), new_parcel))
         
-        self._update_property_references(new_parcel, start_node, "add")
-        self._update_property_references(new_parcel, end_node, "add")
+        self.update_property_references(new_parcel, start_node, end_node, "add")
 
 
-    def _update_parcel_references(self, property, start_node, operation):
+    def update_parcel_references(self, property, start_node, end_node, operation):
         
         start_node_layovers = self.parcels_tree.search(start_node.keys)
-        #end_node_layovers = self.parcels_tree.search(end_node.keys)
+        if end_node is not None:
+            end_node_layovers = self.parcels_tree.search(end_node.keys)
+            for node in end_node_layovers:
+                if node not in start_node_layovers:
+                    start_node_layovers.append(node)
         if operation == "add":
             """ for node in end_node_layovers:
                 property.add_parcel(node.data)
@@ -89,9 +92,13 @@ class GeoApp:
                 print(f"Parcel {node.data} removed")
             
     
-    def _update_property_references(self, parcel, start_node, operation):
+    def update_property_references(self, parcel, start_node, end_node, operation):
         start_node_layovers = self.properties_tree.search(start_node.keys)
-        #end_node_layovers = self.parcels_tree.search(end_node.keys)
+        if end_node is not None:
+            end_node_layovers = self.properties_tree.search(end_node.keys)
+        for node in end_node_layovers:
+            if node not in start_node_layovers:
+                start_node_layovers.append(node)
         if operation == "add":
             """ for node in end_node_layovers:
                 parcel.add_parcel(node.data)
@@ -130,8 +137,10 @@ class GeoApp:
 
     def search_all_by_gps(self, gps_position_1: GPSPosition, gps_position_2: GPSPosition):
         all_properties_1 = self.all_tree.search((gps_position_1.latitude_value, gps_position_1.longitude_value))
+        all_properties_2 = self.all_tree.search((gps_position_2.latitude_value, gps_position_2.longitude_value))
+        combined_properties = all_properties_1 + all_properties_2
         filtered_objects = []
-        for property in all_properties_1:
+        for property in combined_properties:
             if isinstance(property.data, Property):
                 gui_property = PropertyGui(property.data)
                 if gui_property not in filtered_objects:
@@ -146,39 +155,53 @@ class GeoApp:
         property = Property(property.unique_id, property.property_number, property.description, property.boundary)
         properties = []
         for node in self.properties_tree.search((property.boundary[0].latitude_value, property.boundary[0].longitude_value)):
-            if node.data == property:
+            if node.data == property and node not in properties:
                 properties.append(node)
         for node in self.properties_tree.search((property.boundary[1].latitude_value, property.boundary[1].longitude_value)):
-            if node.data == property:
+            if node.data == property and node not in properties:
                 properties.append(node)
         for node in properties:
             self.properties_tree.delete(node.keys, node.data)
             #self.all_tree.delete(node.keys, node.data)
-            self._update_parcel_references(node.data, node, "delete")
+            self.update_parcel_references(node.data, node, None, "delete")
             
     def delete_parcel(self, parcel):
-        parcel = Property(parcel.unique_id, parcel.property_number, parcel.description, parcel.boundary)
+        parcel = Parcel(parcel.unique_id, parcel.property_number, parcel.description, parcel.boundary)
         parcels = []
         for node in self.parcels_tree.search((parcel.boundary[0].latitude_value, parcel.boundary[0].longitude_value)):
-            if node.data == parcel:
+            if node.data == parcel and node not in parcels:
                 parcels.append(node)
         for node in self.parcels_tree.search((parcel.boundary[1].latitude_value, parcel.boundary[1].longitude_value)):
-            if node.data == parcel:
+            if node.data == parcel and node not in parcels:
                 parcels.append(node)
         for node in parcels:
             self.parcels_tree.delete(node.keys, node.data)
             #self.all_tree.delete(node.keys, node.data)
-            self._update_property_references(node.data, node, "delete")
+            self.update_property_references(node.data, node, None, "delete")
                
     def edit_property(self, property_id, new_property_number, new_description, new_start_lat_dir, new_start_latitude, new_start_long_dir, new_start_longtitude,  new_end_lat_dir, \
-        new_end_latitude, new_end_long_dir, new_end_longtitude):
-        property = self.__properties_tree.search(property_id)
-        if property is None:
-            return False
-        property.data.property_number = new_property_number
-        property.data.description = new_description
-        property.data.start_lat = new_start_lat_dir
-        property.data.start_lon = new_start_long_dir
-        property.data.end_lat = new_end_lat_dir
-        property.data.end_lon = new_end_long_dir
-        return True
+        new_end_latitude, new_end_long_dir, new_end_longtitude, initial_property_number, initial_description, initial_start_lat_dir, \
+            initial_start_latitude, initial_start_long_dir, initial_start_longtitude,  initial_end_lat_dir, \
+                initial_end_latitude, initial_end_long_dir, initial_end_longtitude):
+        initial_gps_start = GPSPosition(initial_start_lat_dir, initial_start_latitude, initial_start_long_dir, initial_start_longtitude)
+        initial_gps_end = GPSPosition(initial_end_lat_dir, initial_end_latitude, initial_end_long_dir, initial_end_longtitude)
+        initial_property = Property(property_id, initial_property_number, initial_description, (initial_gps_start, initial_gps_end))
+        initial_node_start = KDNode((initial_property.start_lat, initial_property.start_lon), initial_property)
+        initial_node_end = KDNode((initial_property.end_lat, initial_property.end_lon), initial_property)
+        
+        new_gps_start = GPSPosition(new_start_lat_dir, new_start_latitude, new_start_long_dir, new_start_longtitude)
+        new_gps_end = GPSPosition(new_end_lat_dir, new_end_latitude, new_end_long_dir, new_end_longtitude)
+        new_property = Property(property_id, new_property_number, new_description, (new_gps_start, new_gps_end))
+        new_node_start = KDNode((new_property.start_lat, new_property.start_lon), new_property)
+        new_node_end = KDNode((new_property.end_lat, new_property.end_lon), new_property)
+        if initial_node_start.keys != new_node_start.keys or initial_node_end.keys != new_node_end.keys:
+            self.delete_property(initial_property)
+            self.add_property(new_property_number, new_description, new_start_lat_dir, new_start_latitude, new_start_long_dir, new_start_longtitude,  new_end_lat_dir, \
+                new_end_latitude, new_end_long_dir, new_end_longtitude)
+        else:
+            self.properties_tree.update(initial_node_start.keys, initial_node_start.data,  new_node_start.data)
+            self.properties_tree.update(initial_node_end.keys, initial_node_end.data,  new_node_end.data)
+            
+    def test_add(self, operations, overlap):
+        
+        return self.__data_generator.generate_inserts(operations, overlap)   
