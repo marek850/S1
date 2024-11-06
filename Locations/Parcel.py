@@ -18,10 +18,15 @@ class Parcel(Area):
             if p == property:
                 return
         self.properties.append(property)
+    def remove_property(self, property):
+       self.properties.remove(property)
+        
         
     def __str__(self):
-        boundary_str = f"Hranice: [{self.boundary[0]}, {self.boundary[1]}]"
         return f"Parcela {self.__parcel_number}: {self.description}, Zaciatok: {self.boundary[0]}, Koniec: {self.boundary[1]}\n"
+    def get_data(self):
+        return "".join(f"par,{self.unique_id},{self.__parcel_number},{self.description},{self.start_lat_dir},{abs(self.start_lat)},{self.start_lon_dir},\
+                       {abs(self.start_lon)},{self.end_lat_dir},{self.end_lat},{self.end_lon_dir},{self.end_lon}")
     @property
     def parcel_number(self):
         return self.__parcel_number
@@ -29,6 +34,10 @@ class Parcel(Area):
     @property
     def properties(self):
         return self.__properties
+    
+    @properties.setter
+    def properties(self, value):
+        self.__properties = value
 class ParcelGui():
     def __init__(self, parcel):
         self.__description = parcel.description
@@ -41,8 +50,7 @@ class ParcelGui():
             if self.unique_id == other.unique_id:
                 return True
         return False  
-    def __str__(self):      
-        return f"Parcela: Cislo:{self.__parcel_number}, Popis: {self.__description} Zaciatok: {self.__boundary[0]}, Koniec: {self.__boundary[1]}\n"
+    
     def __str__(self):
         properties_str = "\n".join([f"{property}" for property in self.__properties])
         return (
@@ -50,6 +58,7 @@ class ParcelGui():
             f"Zaciatok: {self.__boundary[0]}, Koniec: {self.__boundary[1]}\n"
             f"Nehnutelnosti na parcele:\n{properties_str}"
         )
+    
     @property
     def description(self):
         return self.__description
@@ -59,12 +68,12 @@ class ParcelGui():
         self.__description = value
 
     @property
-    def property_number(self):
-        return self.__property_number
+    def parcel_number(self):
+        return self.__parcel_number
 
-    @property_number.setter
-    def property_number(self, value):
-        self.__property_number = value
+    @parcel_number.setter
+    def parcel_number(self, value):
+        self.__parcel_number = value
 
     @property
     def unique_id(self):

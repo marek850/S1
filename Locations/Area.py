@@ -34,12 +34,24 @@ class Area(ABC):
     def end_lon(self): 
         return self.boundary[1].longitude_value
     @property
+    def start_lat_dir(self): 
+        return self.boundary[0].latitude_direction
+    @property
+    def start_lon_dir(self): 
+        return self.boundary[0].longitude_direction
+    @property
+    def end_lat_dir(self): 
+        return self.boundary[1].latitude_direction
+    @property
+    def end_lon_dir(self): 
+        return self.boundary[1].longitude_direction
+    @property
     def number(self):
         return self.__number   
     @unique_id.setter
     def unique_id(self, value):
         self.__unique_id = value
-
+    
     @boundary.setter
     def boundary(self, value):
         if isinstance(value, tuple) and len(value) == 2 and all(isinstance(pos, GpsPosition) for pos in value):

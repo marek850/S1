@@ -20,7 +20,13 @@ class Property(Area):
             if p == parcel:
                 return
         self.parcels.append(parcel)
-        
+    def remove_parcel(self, parcel):
+        self.parcels.remove(parcel)
+             
+             
+    def get_data(self):
+        return "".join(f"pro,{self.unique_id},{self.property_number},{self.description},{self.start_lat_dir},{abs(self.start_lat)},{self.start_lon_dir},\
+                       {abs(self.start_lon)},{self.end_lat_dir},{self.end_lat},{self.end_lon_dir},{self.end_lon}")   
     @property
     def property_number(self):
         return self.__property_number
@@ -34,6 +40,9 @@ class Property(Area):
     def parcels(self):
         return self.__parcels
 
+    @parcels.setter
+    def parcels(self, value):
+        self.__parcels = value
 
 class PropertyGui():
     def __init__(self, property):
@@ -49,7 +58,7 @@ class PropertyGui():
         return False  
     
     def __str__(self):
-        parcels_str = "\n".join([f"\{parcel}" for parcel in self.__parcels])
+        parcels_str = "".join([f"{parcel}\n" for parcel in self.__parcels])
         return (
             f"Nehnutelnost: Cislo: {self.__property_number}, Popis: {self.__description}, "
             f"Zaciatok: {self.__boundary[0]}, Koniec: {self.__boundary[1]}\n"

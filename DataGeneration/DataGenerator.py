@@ -26,8 +26,7 @@ class DataGenerator:
         for i in range(num_operations):
             value = ''.join(random.choices('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', k=10))
             
-            # Step 2: Assign a shared or unique GpsPosition based on the intersection percentage
-            if counter < len(shared_gps_positions):
+            if i < len(shared_gps_positions):
                 if i > 0 and i % 2 == 0:
                     counter += 1
                 gps1 = shared_gps_positions[counter]  
@@ -65,13 +64,7 @@ class DataGenerator:
                        property.boundary[0].longitude_direction, abs(property.boundary[0].longitude_value), \
                            property.boundary[1].latitude_direction, abs(property.boundary[1].latitude_value),\
                        property.boundary[1].longitude_direction, abs(property.boundary[1].longitude_value))
-                
-                """ start_node = KDNode((property.start_lat, property.start_lon), property)
-                end_node = KDNode((property.end_lat, property.end_lon), property)
-                self.__property_tree.insert(start_node)
-                self.__property_tree.insert(end_node)
-                self.__all_tree.insert(KDNode((property.start_lat, property.start_lon), property))
-                self.__all_tree.insert(KDNode((property.end_lat, property.end_lon), property)) """
+        
                 added_elements += f"Pridana Nehnutelnost: {property}\n"
                 #self.__app.update_parcel_references(property, start_node, end_node, "add")
             else:
@@ -86,12 +79,7 @@ class DataGenerator:
                        parcel.boundary[0].longitude_direction, abs(parcel.boundary[0].longitude_value), \
                            parcel.boundary[1].latitude_direction, abs(parcel.boundary[1].latitude_value),\
                        parcel.boundary[1].longitude_direction, abs(parcel.boundary[1].longitude_value))
-                """ start_node = KDNode((parcel.start_lat, parcel.start_lon), parcel)
-                end_node = KDNode((parcel.end_lat, parcel.end_lon), parcel)
-                self.__parcel_tree.insert(start_node)
-                self.__parcel_tree.insert(end_node)
-                self.__all_tree.insert(KDNode((parcel.start_lat, parcel.start_lon), parcel))
-                self.__all_tree.insert(KDNode((parcel.end_lat, parcel.end_lon), parcel)) """
+
                 added_elements += f"Pridana Parcela: {parcel}\n"
                 #self.__app.update_property_references(parcel, start_node, end_node, "add")
         return added_elements

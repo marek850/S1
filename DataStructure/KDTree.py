@@ -4,47 +4,28 @@ from DataStructure.KDNode import KDNode
 
 class KDTree:
     def __init__(self, dimensions=2):
-        self.dim = dimensions
-        self.root = None
-        self.size = 0
-        
+        self.__dim = dimensions
+        self.__root = None
+        self.__size = 0
+        @property
+        def dim(self):
+            return self.__dim
+
+        @property
+        def root(self):
+            return self.__root
+
+        @property
+        def size(self):
+            return self.__size
         
     def insert(self, newNode: KDNode):
-        """ depth = 0
-        current = self.root
-        parent = None
-
-        while current is not None:
-            dimension = depth % self.dim
-            parent = current
-            
-            
-            if newNode.keys[dimension] <= current.keys[dimension]:
-                current = current.left
-            else:
-                current = current.right
-
-            depth += 1
-
-        newNode.parent = parent
-        newNode.dim = depth % self.dim
-
-        
-        if parent is None:
-            self.root = newNode  
-        else:
-            dimension = (depth - 1) % self.dim  
-            if newNode.keys[dimension] <= parent.keys[dimension]:
-                parent.left = newNode
-            else:
-                parent.right = newNode """
-        #self.size += 1
         depth = 0
         dimension = 0
         parent = None
-        current = self.root
+        current = self.__root
         while current is not None:
-            dimension = depth % self.dim
+            dimension = depth % self.__dim
             parent = current
             if newNode.keys[dimension] <= current.keys[dimension]:
                 current = current.left
@@ -53,22 +34,22 @@ class KDTree:
             depth += 1
         newNode.parent = parent
         if parent == None:
-            self.root = newNode
+            self.__root = newNode
         elif newNode.keys[dimension] <= parent.keys[dimension]:
             parent.left = newNode
-            newNode.dim = depth % self.dim
+            newNode.dim = depth % self.__dim
         else:
             parent.right = newNode
-            newNode.dim = depth  % self.dim
-        self.size += 1
+            newNode.dim = depth  % self.__dim
+        self.__size += 1
      
     def search(self, target_keys: tuple):
         depth = 0
         dimension = 0
         foundNodes = []
-        current_node = self.root
+        current_node = self.__root
         while current_node is not None:
-            dimension = depth % self.dim
+            dimension = depth % self.__dim
             if target_keys == current_node.keys:
                 foundNodes.append(current_node)
             if target_keys[dimension] <= current_node.keys[dimension]:
@@ -77,16 +58,19 @@ class KDTree:
                 current_node = current_node.right
             depth += 1
         return foundNodes
-          
+    def clear(self):
+        self.__root = None
+        self.__size = 0    
     def search_with_data(self, target_keys: tuple, data):
         depth = 0
         dimension = 0
         found_node = None
-        current_node = self.root
+        current_node = self.__root
         while current_node is not None:
-            dimension = depth % self.dim
+            dimension = depth % self.__dim
             if target_keys == current_node.keys and data == current_node.data:
                 found_node = current_node
+                break
             if target_keys[dimension] <= current_node.keys[dimension]:
                 current_node = current_node.left
             else:
@@ -97,9 +81,9 @@ class KDTree:
     def find_node(self,node):
         depth = 0
         dimension = 0
-        current_node = self.root
+        current_node = self.__root
         while current_node is not None:
-            dimension = depth % self.dim
+            dimension = depth % self.__dim
             if node == current_node:
                 return current_node
             if node.keys[dimension] <= current_node.keys[dimension]:
@@ -109,10 +93,12 @@ class KDTree:
             depth += 1
         return None    
     
-    def update(self, key, data, new_data):
+    def update_data(self, key, data, new_data):
         node_to_update = self.search_with_data(key, data)
+        old_data = node_to_update.data
         if node_to_update is not None:
             node_to_update.data = new_data
+        return old_data
         
         
     def delete(self, key, data):    
@@ -141,7 +127,7 @@ class KDTree:
                 if node2.left is not None:
                     node2.left.parent = node2
                 if node2.parent is None:
-                    self.root = node2
+                    self.__root = node2
                 else:
                     if node2.parent != None and node2.parent.left == node1:
                         node2.parent.left = node2
@@ -172,18 +158,18 @@ class KDTree:
                 elif node1.parent != None and node1.parent.right == node2:
                     node1.parent.right = node1
                 if node2.parent is None:
-                    self.root = node2
+                    self.__root = node2
             node2.dim = node1_dim_t
             node1.dim = node2_dim_t
                
-                                    
-        current = self.root
+        current = self.search_with_data(key, data)                            
+        """ current = self.__root
         parent = None
         depth = 0
         currentDimension = 0       
 
         while current is not None:
-            currentDimension = depth % self.dim
+            currentDimension = depth % self.__dim
             if current.keys == key and current.data == data:
                 break
 
@@ -193,7 +179,7 @@ class KDTree:
                 current = current.left
             else:
                 current = current.right
-            depth += 1
+            depth += 1 """
 
         if current is None:
             return "Uzol nenájdený"
@@ -201,14 +187,14 @@ class KDTree:
 
         if current.left is None and current.right is None:
             if parent is None:
-                self.root = None
-                self.size -= 1
+                self.__root = None
+                self.__size -= 1
             elif parent.left == current:
                 parent.left = None
-                self.size -= 1
+                self.__size -= 1
             else:
                 parent.right = None
-                self.size -= 1
+                self.__size -= 1
             return
 
         
@@ -231,26 +217,37 @@ class KDTree:
                     rep_duplicates = self.__find_duplicates_by_dimension(replacement, replacement.dim)
                     for duplicate in rep_duplicates:
                         duplicates_to_remove.append(duplicate)
-                    
-                    
-                                              
+                                                      
             parent = current.parent
             if parent is None:
-                self.root = None
-                self.size -= 1
+                self.__root = None
+                self.__size -= 1
             elif parent.left == current:
                 parent.left = None
-                self.size -= 1
+                self.__size -= 1
             else:
                 parent.right = None
-                self.size -= 1
+                self.__size -= 1
             if duplicates_to_remove == []:
                 break
         if to_insert != []:
                 for node in to_insert:
                     self.insert(node)    
     
-            
+    def level_order_traversal_unique_data(self):
+        if self.__root is None:
+            return []
+        nodes = []
+        queue = [self.__root]
+        while queue:
+            current = queue.pop(0)
+            if current.data not in nodes:
+                nodes.append(current.data)
+            if current.left:
+                queue.append(current.left)
+            if current.right:
+                queue.append(current.right)
+        return nodes        
     def __find_duplicates_by_dimension(self, node, dimension):
         duplicates = []
         current = node.right
@@ -282,7 +279,8 @@ class KDTree:
         while True:
             if current is not None:
                 temp.append(current)
-                current = current.left
+                if current.dim != dimension:
+                    current = current.left
             else:
                 if not temp:
                     break
@@ -313,11 +311,12 @@ class KDTree:
                 current = temp.pop()
                 if min_node is None or current.keys[dimension] < min_node.keys[dimension]:
                     min_node = current
-                current = current.right
+                if current.dim != dimension:
+                    current = current.right
         return min_node
     def get_all_nodes(self):
         nodes = []
-        current = self.root
+        current = self.__root
         temp = []
         while True:
             if current is not None:

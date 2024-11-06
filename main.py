@@ -13,12 +13,13 @@ from Locations.Parcel import Parcel
 
 def main():
     
-    """ operationGenerator = OpGenerator()
-    operationGenerator.generate_inserts(1000)
+    operationGenerator = OpGenerator()
+    """ operationGenerator.generate_inserts(1000)
     operationGenerator.generate_searches()
-    operationGenerator.generate_deletes()  """
+    operationGenerator.generate_deletes() """
+    operationGenerator.test()
 
-    # Spusti GeoApp vo vlákne
+    
     geo_app = GeoApp()
     app = MainApp(geo_app)
     app.mainloop()

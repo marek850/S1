@@ -9,3 +9,5 @@ class Generator:
         self.__seed = random.randint(1, 10000000)
         random.seed(self.__seed)
         return random.randint(0, sys.maxsize)
+    def generate_number(self, min, max):
+        return random.randint(min, max)
