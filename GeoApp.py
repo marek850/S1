@@ -11,10 +11,9 @@ from FileProcessing.FileProcessor import FileHandler
 
 class GeoApp:
     def __init__(self):
-        # Initialize the KDTree for storing properties and parcels
         self.__properties_tree = KDTree()
         self.__parcels_tree = KDTree()
-        self.__all_tree = KDTree()  # Combined KDTree for properties and parcels
+        self.__all_tree = KDTree() 
         self.__generator = Generator()
         self.__data_generator = DataGenerator(self.__parcels_tree, self.__properties_tree, self.__all_tree, self)
         self.__last_unique_id = random.randint(1, 10000000)
@@ -128,9 +127,9 @@ class GeoApp:
     
     def save_to_file(self, file_name):
         all_nodes = self.all_tree.level_order_traversal_unique_data()
-        sorted_nodes = sorted(all_nodes, key=lambda Area: Area.unique_id)
+        #sorted_nodes = sorted(all_nodes, key=lambda Area: Area.unique_id)
         file_handler = FileHandler(file_name, self)
-        file_handler.save_to_file(sorted_nodes)
+        file_handler.save_to_file(all_nodes)
         
     def load_from_file(self, file_name):
         self.clear_trees()

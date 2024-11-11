@@ -3,7 +3,7 @@ from Locations.Area import Area
 
 class Parcel(Area):
     def __init__(self, unique_id, parcel_number, description, boundary):
-        super().__init__(unique_id, boundary, description, parcel_number)
+        super().__init__(unique_id, boundary, description)
         self.__parcel_number = parcel_number
         self.__properties = []   
     

@@ -4,11 +4,10 @@ from typing import Tuple
 from Locations import GpsPosition
 
 class Area(ABC):
-    def __init__(self, unique_id: int, boundary: tuple, description: str, number: int):
+    def __init__(self, unique_id: int, boundary: tuple, description: str):
         self.__unique_id = unique_id
         self.__boundary = boundary
         self.__description = description
-        self.__number = number
     @property
     def unique_id(self):
         return self.__unique_id

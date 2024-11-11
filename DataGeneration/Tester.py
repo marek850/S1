@@ -76,12 +76,26 @@ class Data:
         self.__sec_y = sec_y
     def __eq__(self, other):
         return self.__primary_key == other.__primary_key
+    def __str__(self):
+        return f"Primarny_kluc='{self.__primary_key}', X= {self.__sec_x}, Y= {self.__sec_y}"
+    
+    def __repr__(self):
+        return self.__str__()
+    @property
+    def primary_key(self):
+        return self.__primary_key
+    @property
+    def sec_x(self):
+        return self.__sec_x
+    @property
+    def sec_y(self):
+        return self.__sec_y
 
 class OpGenerator:
     def __init__(self,  seed=None):#parcel_tree, property_tree, all_tree,
         self.__max_size = sys.maxsize
         self.__seed = seed if seed is not None else random.randint(1, self.__max_size)
-        self.__kd_tree = KDTree(4)
+        self.__kd_tree = KDTree(2)
         self.__generated_keys = []
         self.__all_nodes = []
         self.__nodes = []
@@ -89,30 +103,39 @@ class OpGenerator:
         self.__generator = Generator(self.__seed)
         
     
-    def generate_inserts(self, num_operations=1000, percentage_of_duplicates=30, type="property"):
+    def generate_inserts(self, num_operations=1000, percentage_of_duplicates=30):
         
         mistakes = 0
         currently_generated_data = []
+        values = self.generate_unique_values(num_operations)
         keys = self.__generate_keys(num_operations, percentage_of_duplicates)
         print(f"Generating {num_operations} insert operations:\n")
         for i in range(num_operations):
-            self.generate_insert(i, num_operations)
+            self.generate_insert(i, values)
         if mistakes == 0:
             print("All keys were inserted correctly")
         else:
             print(f"Number of mistakes during insertions: {mistakes}")
         #self.__test_inserts(currentlyGeneratedData)
-    
-    def generate_insert(self, i, num_operations=0):
+    def generate_unique_values(self,num_values):
+        values = []
+        for _ in range(num_values):
+            value = ''.join(random.choices('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', k=10))
+            while value in values:
+                value = ''.join(random.choices('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', k=10))
+            values.append(value)
+        return values
+    def generate_insert(self, i, values):
         a = random.uniform(0.1, 10000.25)
         b = ''.join(random.choices('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', k=random.randint(1, 10)))
         c = random.randint(0, 10000)
         d = random.uniform(0.1, 10000.25)
         uroven1 = Uroven1(a, b)
         uroven4 = Uroven4(b, c)
-        value = ''.join(random.choices('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', k=10))
+        value = values.pop()
+        
         data = Data(value, self.__generator.generate_number(1, 50), self.__generator.generate_number(1, 50))
-        node1 = KDNode((uroven1, c, d, uroven4), data)
+        node1 = KDNode((data.sec_x, data.sec_y), data)
         
         """ lat = "NS"
         lon = "WE"
@@ -142,24 +165,29 @@ class OpGenerator:
         return mistakes
     def generate_random_operations(self, num_operations=100):
         print(f"Generating {num_operations} random operations:\n")
+        string_values = self.generate_unique_values(num_operations)
         mistakes = 0
+        insert_mistakes = 0
+        search_mistakes = 0
+        delete_mistakes = 0
         for i in range(num_operations):
             if not self.__all_nodes:
                 break
             operation = random.choice(["insert", "delete", "search"])
             if operation == "insert":
-                mistakes += self.generate_insert(i)
+                insert_mistakes += self.generate_insert(i, string_values)
             elif operation == "delete":
-                mistakes += self.generate_delete(i)
+                delete_mistakes += self.generate_delete(i)
             else:
-                mistakes += self.generate_search(self.__all_nodes[random.randint(0, len(self.__all_nodes) - 1)])
+                search_mistakes += self.generate_search(self.__all_nodes[random.randint(0, len(self.__all_nodes) - 1)])
+        mistakes += insert_mistakes + search_mistakes + delete_mistakes
         if mistakes == 0:
             print("All operations were successful")
         else:
-            print(f"Number of mistakes: {mistakes}")   
+            print(f"Number of mistakes during inserts: {insert_mistakes}, searches: {search_mistakes}, deletes: {delete_mistakes}")   
     def test(self):
-        self.generate_inserts(10000, 40)
-        self.generate_random_operations()
+        self.generate_inserts(20000, 40)
+        self.generate_random_operations(10000)
     
     def __generate_keys(self,num_tuples, duplicate_percentage):
     
@@ -191,16 +219,20 @@ class OpGenerator:
             print(f"Number of mistakes: {num_of_mistakes}")
         
     def generate_delete(self,i):
+        print(f"seed:{self.__seed}")
         node_to_delete = self.__all_nodes[random.randint(0, len(self.__all_nodes) - 1)]
         print(f"Deleting node with key: {node_to_delete.keys} and value: {node_to_delete.data}\n")
         mistakes = 0
+        not_deleted = 0
         if self.__kd_tree.delete(node_to_delete.keys, node_to_delete.data) == "Uzol nenájdený":
             not_deleted += 1
         else:
+            
             self.__all_nodes.remove(node_to_delete)
             #nodes = self.__kd_tree.get_all_nodes()
             whole_tree = self.__kd_tree.get_all_nodes()
             if whole_tree.count(node_to_delete) !=  self.__all_nodes.count(node_to_delete):
+                print(f"Problem while deleting {node_to_delete.keys} with data {node_to_delete.data}\n Count in tree: {whole_tree.count(node_to_delete)} Count in all_nodes: {self.__all_nodes.count(node_to_delete)}\n")
                 mistakes += 1
             if mistakes == 0:   
                 print("Tree remains consistent after deletion")
@@ -242,13 +274,11 @@ class OpGenerator:
         print(f"Generating delete operations for all inserted keys:\n")
         i = 0
         while self.__all_nodes != []:
-            try:
-                if i == 25:
-                    print("")
-                
+            
+               
+            mistakes += self.generate_delete(i)
                         
-            except Exception as e:
-                print(f"Failed to delete key: {node_to_delete.keys} and value: {node_to_delete.data}. Error: {e}\n")
+            
             i+=1
                
         if len(self.__all_nodes) == 0:

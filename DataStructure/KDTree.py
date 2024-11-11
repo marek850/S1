@@ -7,41 +7,56 @@ class KDTree:
         self.__dim = dimensions
         self.__root = None
         self.__size = 0
-        @property
-        def dim(self):
-            return self.__dim
+    @property
+    def dim(self):
+        return self.__dim
 
-        @property
-        def root(self):
-            return self.__root
+    @property
+    def root(self):
+        return self.__root
 
-        @property
-        def size(self):
-            return self.__size
+    @property
+    def size(self):
+        return self.__size
+    @dim.setter
+    def dim(self, value):
+        self.__dim = value
+
+    @root.setter
+    def root(self, value):
+        self.__root = value
+
+    @size.setter
+    def size(self, value):
+        self.__size = value
         
     def insert(self, newNode: KDNode):
         depth = 0
-        dimension = 0
+        current = self.root
         parent = None
-        current = self.__root
+
         while current is not None:
-            dimension = depth % self.__dim
+            dimension = depth % self.dim
             parent = current
             if newNode.keys[dimension] <= current.keys[dimension]:
                 current = current.left
             else:
                 current = current.right
+
             depth += 1
+
         newNode.parent = parent
-        if parent == None:
-            self.__root = newNode
-        elif newNode.keys[dimension] <= parent.keys[dimension]:
-            parent.left = newNode
-            newNode.dim = depth % self.__dim
+        newNode.dim = depth % self.dim
+
+        if parent is None:
+            self.root = newNode  
         else:
-            parent.right = newNode
-            newNode.dim = depth  % self.__dim
-        self.__size += 1
+            dimension = (depth - 1) % self.dim  # Dimenzia rodiča
+            if newNode.keys[dimension] <= parent.keys[dimension]:
+                parent.left = newNode
+            else:
+                parent.right = newNode
+        self.size += 1
      
     def search(self, target_keys: tuple):
         depth = 0
@@ -162,8 +177,8 @@ class KDTree:
             node2.dim = node1_dim_t
             node1.dim = node2_dim_t
                
-        current = self.search_with_data(key, data)                            
-        """ current = self.__root
+        #current = self.search_with_data(key, data)                            
+        current = self.__root
         parent = None
         depth = 0
         currentDimension = 0       
@@ -179,7 +194,7 @@ class KDTree:
                 current = current.left
             else:
                 current = current.right
-            depth += 1 """
+            depth += 1 
 
         if current is None:
             return "Uzol nenájdený"
@@ -196,7 +211,6 @@ class KDTree:
                 parent.right = None
                 self.__size -= 1
             return
-
         
         duplicates_to_remove = []
         to_insert = []
@@ -216,8 +230,9 @@ class KDTree:
                     swap_nodes(current, replacement)
                     rep_duplicates = self.__find_duplicates_by_dimension(replacement, replacement.dim)
                     for duplicate in rep_duplicates:
-                        duplicates_to_remove.append(duplicate)
-                                                      
+                        if duplicate != current:
+                            duplicates_to_remove.append(duplicate)
+                                                
             parent = current.parent
             if parent is None:
                 self.__root = None
@@ -230,9 +245,11 @@ class KDTree:
                 self.__size -= 1
             if duplicates_to_remove == []:
                 break
+        
         if to_insert != []:
-                for node in to_insert:
-                    self.insert(node)    
+            for node in to_insert:
+                self.insert(node)   
+                     
     
     def level_order_traversal_unique_data(self):
         if self.__root is None:
@@ -243,6 +260,20 @@ class KDTree:
             current = queue.pop(0)
             if current.data not in nodes:
                 nodes.append(current.data)
+            if current.left:
+                queue.append(current.left)
+            if current.right:
+                queue.append(current.right)
+        return nodes        
+    def level_order_traversal(self):
+        
+        if self.__root is None:
+            return []
+        nodes = []
+        queue = [self.__root]
+        while queue:
+            current = queue.pop(0)
+            nodes.append(current)
             if current.left:
                 queue.append(current.left)
             if current.right:
@@ -281,6 +312,8 @@ class KDTree:
                 temp.append(current)
                 if current.dim != dimension:
                     current = current.left
+                else:
+                    current = current.right
             else:
                 if not temp:
                     break
@@ -313,6 +346,8 @@ class KDTree:
                     min_node = current
                 if current.dim != dimension:
                     current = current.right
+                else:
+                    current = current.left
         return min_node
     def get_all_nodes(self):
         nodes = []

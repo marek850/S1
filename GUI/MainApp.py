@@ -159,23 +159,19 @@ class PropertyInsert(ctk.CTkFrame):
     def add_property(self):
 
         self.update()
-        # Retrieve values from input fields
         property_number = self.property_number_entry.get().strip()
         description = self.description_entry.get().strip()
 
-        # First GPS position
         latitude_direction_1 = self.latitude_direction_var_1.get()
         latitude_value_1 = float(self.latitude_value_entry_1.get().strip())
         longitude_direction_1 = self.longitude_direction_var_1.get()
         longitude_value_1 = float(self.longitude_value_entry_1.get().strip())
 
-        # Second GPS position
         latitude_direction_2 = self.latitude_direction_var_2.get()
         latitude_value_2 = float(self.latitude_value_entry_2.get().strip())
         longitude_direction_2 = self.longitude_direction_var_2.get()
         longitude_value_2 = float(self.longitude_value_entry_2.get().strip())
 
-        # Validate the input
         if not property_number:
             self.show_alert("Supisne cislo je povinne.")
             return
@@ -208,13 +204,13 @@ class PropertyInsert(ctk.CTkFrame):
         if not self.is_valid_number(longitude_value_2):
             self.show_alert("Hodnota druhej zemepisnej dlzky musi byt cislo.")
             return
-        # Convert directions to single letters
+        
         latitude_direction_1 = latitude_direction_1[0]  # "North" -> "N", "South" -> "S"
         longitude_direction_1 = longitude_direction_1[0]  # "East" -> "E", "West" -> "W"
         latitude_direction_2 = latitude_direction_2[0]
         longitude_direction_2 = longitude_direction_2[0]
         self.update()
-        # Call the app method with the collected values
+        
         self.app.add_property(
             property_number,
             description,
@@ -240,7 +236,7 @@ class PropertyInsert(ctk.CTkFrame):
         
         messagebox.showerror("Chyba", message)
     def clear_form(self):
-        # Clear all input fields
+        
         self.property_number_entry.delete(0, 'end')
         self.description_entry.delete(0, 'end')
         self.latitude_value_entry_1.delete(0, 'end')
@@ -248,7 +244,6 @@ class PropertyInsert(ctk.CTkFrame):
         self.latitude_value_entry_2.delete(0, 'end')
         self.longitude_value_entry_2.delete(0, 'end')
 
-        # Reset the radio buttons
         self.latitude_direction_var_1.set('')
         self.longitude_direction_var_1.set('')
         self.latitude_direction_var_2.set('')
@@ -271,19 +266,16 @@ class ParcelInsert(ctk.CTkFrame):
         label = ctk.CTkLabel(self, text="Pridanie Parcely", font=("Arial", 20))
         label.grid(row=0, column=0, columnspan=4, pady=20, sticky="w")
 
-        
         parcel_number_label = ctk.CTkLabel(self, text="Cislo parcely:")
         parcel_number_label.grid(row=1, column=0, padx=10, pady=5, sticky="w")
         self.parcel_number_entry = ctk.CTkEntry(self)
         self.parcel_number_entry.grid(row=1, column=1, padx=10, pady=5, sticky="w")
 
-        
         description_label = ctk.CTkLabel(self, text="Popis:")
         description_label.grid(row=2, column=0, padx=10, pady=5, sticky="w")
         self.description_entry = ctk.CTkEntry(self)
         self.description_entry.grid(row=2, column=1, padx=10, pady=5, sticky="w")
 
-        # Latitude Direction 1
         latitude_direction_label_1 = ctk.CTkLabel(self, text="Zemepisna sirka 1:")
         latitude_direction_label_1.grid(row=3, column=0, padx=10, pady=5, sticky="w")
         self.latitude_direction_var_1 = ctk.StringVar()
@@ -292,13 +284,11 @@ class ParcelInsert(ctk.CTkFrame):
         latitude_south_checkbox_1 = ctk.CTkRadioButton(self, text="South", variable=self.latitude_direction_var_1, value='South')
         latitude_south_checkbox_1.grid(row=3, column=2, padx=5, pady=5, sticky="w")
 
-        # Latitude Value 1
         latitude_value_label_1 = ctk.CTkLabel(self, text="Hodnota zemepisnej sirky 1:")
         latitude_value_label_1.grid(row=4, column=0, padx=10, pady=5, sticky="w")
         self.latitude_value_entry_1 = ctk.CTkEntry(self)
         self.latitude_value_entry_1.grid(row=4, column=1, padx=10, pady=5, sticky="w")
 
-        # Longitude Direction 1
         longitude_direction_label_1 = ctk.CTkLabel(self, text="Zemepisna dlzka 1:")
         longitude_direction_label_1.grid(row=5, column=0, padx=10, pady=5, sticky="w")
         self.longitude_direction_var_1 = ctk.StringVar()
@@ -307,13 +297,11 @@ class ParcelInsert(ctk.CTkFrame):
         longitude_west_checkbox_1 = ctk.CTkRadioButton(self, text="West", variable=self.longitude_direction_var_1, value='West')
         longitude_west_checkbox_1.grid(row=5, column=2, padx=5, pady=5, sticky="w")
 
-        # Longitude Value 1
         longitude_value_label_1 = ctk.CTkLabel(self, text="Hodnota zemepisnej dlzky 1:")
         longitude_value_label_1.grid(row=6, column=0, padx=10, pady=5, sticky="w")
         self.longitude_value_entry_1 = ctk.CTkEntry(self)
         self.longitude_value_entry_1.grid(row=6, column=1, padx=10, pady=5, sticky="w")
 
-        # Latitude Direction 2
         latitude_direction_label_2 = ctk.CTkLabel(self, text="Zemepisna sirka 2:")
         latitude_direction_label_2.grid(row=7, column=0, padx=10, pady=5, sticky="w")
         self.latitude_direction_var_2 = ctk.StringVar()
@@ -322,13 +310,11 @@ class ParcelInsert(ctk.CTkFrame):
         latitude_south_checkbox_2 = ctk.CTkRadioButton(self, text="South", variable=self.latitude_direction_var_2, value='South')
         latitude_south_checkbox_2.grid(row=7, column=2, padx=5, pady=5, sticky="w")
 
-        # Latitude Value 2
         latitude_value_label_2 = ctk.CTkLabel(self, text="Hodnota zemepisnej sirky 2:")
         latitude_value_label_2.grid(row=8, column=0, padx=10, pady=5, sticky="w")
         self.latitude_value_entry_2 = ctk.CTkEntry(self)
         self.latitude_value_entry_2.grid(row=8, column=1, padx=10, pady=5, sticky="w")
 
-        # Longitude Direction 2
         longitude_direction_label_2 = ctk.CTkLabel(self, text="Zemepisna dlzka 2:")
         longitude_direction_label_2.grid(row=9, column=0, padx=10, pady=5, sticky="w")
         self.longitude_direction_var_2 = ctk.StringVar()
@@ -337,7 +323,6 @@ class ParcelInsert(ctk.CTkFrame):
         longitude_west_checkbox_2 = ctk.CTkRadioButton(self, text="West", variable=self.longitude_direction_var_2, value='West')
         longitude_west_checkbox_2.grid(row=9, column=2, padx=5, pady=5, sticky="w")
 
-        # Longitude Value 2
         longitude_value_label_2 = ctk.CTkLabel(self, text="Hodnota zemepisnej dlzky 2:")
         longitude_value_label_2.grid(row=10, column=0, padx=10, pady=5, sticky="w")
         self.longitude_value_entry_2 = ctk.CTkEntry(self)
@@ -347,27 +332,22 @@ class ParcelInsert(ctk.CTkFrame):
         add_parcel_button = ctk.CTkButton(self, text="Pridat", command=self.startAddParcel)
         add_parcel_button.grid(row=11, column=0, columnspan=3, pady=20, sticky="w", padx=100)
     
-
     def add_parcel(self):
 
         self.update()
-        # Retrieve values from input fields
         parcel_number = self.parcel_number_entry.get().strip()
         description = self.description_entry.get().strip()
 
-        # First GPS position
         latitude_direction_1 = self.latitude_direction_var_1.get()
         latitude_value_1 = float(self.latitude_value_entry_1.get().strip())
         longitude_direction_1 = self.longitude_direction_var_1.get()
         longitude_value_1 = float(self.longitude_value_entry_1.get().strip())
 
-        # Second GPS position
         latitude_direction_2 = self.latitude_direction_var_2.get()
         latitude_value_2 = float(self.latitude_value_entry_2.get().strip())
         longitude_direction_2 = self.longitude_direction_var_2.get()
         longitude_value_2 = float(self.longitude_value_entry_2.get().strip())
 
-        # Validate the input
         if not parcel_number:
             self.show_alert("Parcelne cislo je povinne.")
             return
@@ -400,13 +380,13 @@ class ParcelInsert(ctk.CTkFrame):
         if not self.is_valid_number(longitude_value_2):
             self.show_alert("Hodnota druhej zemepisnej dlzky musi byt cislo.")
             return
-        # Convert directions to single letters
+
         latitude_direction_1 = latitude_direction_1[0]  # "North" -> "N", "South" -> "S"
         longitude_direction_1 = longitude_direction_1[0]  # "East" -> "E", "West" -> "W"
         latitude_direction_2 = latitude_direction_2[0]
         longitude_direction_2 = longitude_direction_2[0]
         self.update()
-        # Call the app method with the collected values
+        
         self.app.add_parcel(
             parcel_number,
             description,
@@ -431,7 +411,6 @@ class ParcelInsert(ctk.CTkFrame):
         
         messagebox.showerror("Chyba", message)
     def clear_form(self):
-        # Clear all input fields
         self.parcel_number_entry.delete(0, 'end')
         self.description_entry.delete(0, 'end')
         self.latitude_value_entry_1.delete(0, 'end')
@@ -439,7 +418,6 @@ class ParcelInsert(ctk.CTkFrame):
         self.latitude_value_entry_2.delete(0, 'end')
         self.longitude_value_entry_2.delete(0, 'end')
 
-        # Reset the radio buttons
         self.latitude_direction_var_1.set('')
         self.longitude_direction_var_1.set('')
         self.latitude_direction_var_2.set('')
@@ -457,7 +435,6 @@ class PropertyUpdate(ctk.CTkToplevel):
         super().__init__(parent)
         self.controller = controller
         self.app = app
-        # Extract data from property_data
         self.property_id = property_data.unique_id
         self.initial_property_number = property_data.property_number
         self.initial_description = property_data.description
@@ -469,7 +446,7 @@ class PropertyUpdate(ctk.CTkToplevel):
         self.initial_latitude_value_2 = abs(property_data.boundary[1].latitude_value)
         self.initial_longitude_direction_2 = property_data.boundary[1].longitude_direction
         self.initial_longitude_value_2 = abs(property_data.boundary[1].longitude_value)
-        # Form fields with pre-filled values
+        
         label = ctk.CTkLabel(self, text="Uprava Nehnutelnosti", font=("Arial", 20))
         label.grid(row=0, column=0, columnspan=4, pady=20, sticky="w")
 
@@ -485,7 +462,6 @@ class PropertyUpdate(ctk.CTkToplevel):
         self.description_entry.insert(0, self.initial_description)
         self.description_entry.grid(row=2, column=1, padx=10, pady=5, sticky="w")
 
-        # Latitude Direction 1
         latitude_direction_label_1 = ctk.CTkLabel(self, text="Zemepisna sirka 1:")
         latitude_direction_label_1.grid(row=3, column=0, padx=10, pady=5, sticky="w")
         self.latitude_direction_var_1 = ctk.StringVar(value=self.initial_latitude_direction_1)
@@ -494,14 +470,12 @@ class PropertyUpdate(ctk.CTkToplevel):
         latitude_south_checkbox_1 = ctk.CTkRadioButton(self, text="South", variable=self.latitude_direction_var_1, value='S')
         latitude_south_checkbox_1.grid(row=3, column=2, padx=5, pady=5, sticky="w")
 
-        # Latitude Value 1
         latitude_value_label_1 = ctk.CTkLabel(self, text="Hodnota zemepisnej sirky 1:")
         latitude_value_label_1.grid(row=4, column=0, padx=10, pady=5, sticky="w")
         self.latitude_value_entry_1 = ctk.CTkEntry(self)
         self.latitude_value_entry_1.insert(0, self.initial_latitude_value_1)
         self.latitude_value_entry_1.grid(row=4, column=1, padx=10, pady=5, sticky="w")
 
-        # Longitude Direction 1
         longitude_direction_label_1 = ctk.CTkLabel(self, text="Zemepisna dlzka 1:")
         longitude_direction_label_1.grid(row=5, column=0, padx=10, pady=5, sticky="w")
         self.longitude_direction_var_1 = ctk.StringVar(value=self.initial_longitude_direction_1)
@@ -510,14 +484,12 @@ class PropertyUpdate(ctk.CTkToplevel):
         longitude_west_checkbox_1 = ctk.CTkRadioButton(self, text="West", variable=self.longitude_direction_var_1, value='W')
         longitude_west_checkbox_1.grid(row=5, column=2, padx=5, pady=5, sticky="w")
 
-        # Longitude Value 1
         longitude_value_label_1 = ctk.CTkLabel(self, text="Hodnota zemepisnej dlzky 1:")
         longitude_value_label_1.grid(row=6, column=0, padx=10, pady=5, sticky="w")
         self.longitude_value_entry_1 = ctk.CTkEntry(self)
         self.longitude_value_entry_1.insert(0, self.initial_longitude_value_1)
         self.longitude_value_entry_1.grid(row=6, column=1, padx=10, pady=5, sticky="w")
 
-        # Latitude Direction 2
         latitude_direction_label_2 = ctk.CTkLabel(self, text="Zemepisna sirka 2:")
         latitude_direction_label_2.grid(row=7, column=0, padx=10, pady=5, sticky="w")
         self.latitude_direction_var_2 = ctk.StringVar(value=self.initial_latitude_direction_2)
@@ -526,14 +498,12 @@ class PropertyUpdate(ctk.CTkToplevel):
         latitude_south_checkbox_2 = ctk.CTkRadioButton(self, text="South", variable=self.latitude_direction_var_2, value='S')
         latitude_south_checkbox_2.grid(row=7, column=2, padx=5, pady=5, sticky="w")
 
-        # Latitude Value 2
         latitude_value_label_2 = ctk.CTkLabel(self, text="Hodnota zemepisnej sirky 2:")
         latitude_value_label_2.grid(row=8, column=0, padx=10, pady=5, sticky="w")
         self.latitude_value_entry_2 = ctk.CTkEntry(self)
         self.latitude_value_entry_2.insert(0, self.initial_latitude_value_2)
         self.latitude_value_entry_2.grid(row=8, column=1, padx=10, pady=5, sticky="w")
 
-        # Longitude Direction 2
         longitude_direction_label_2 = ctk.CTkLabel(self, text="Zemepisna dlzka 2:")
         longitude_direction_label_2.grid(row=9, column=0, padx=10, pady=5, sticky="w")
         self.longitude_direction_var_2 = ctk.StringVar(value=self.initial_longitude_direction_2)
@@ -542,20 +512,17 @@ class PropertyUpdate(ctk.CTkToplevel):
         longitude_west_checkbox_2 = ctk.CTkRadioButton(self, text="West", variable=self.longitude_direction_var_2, value='W')
         longitude_west_checkbox_2.grid(row=9, column=2, padx=5, pady=5, sticky="w")
 
-        # Longitude Value 2
         longitude_value_label_2 = ctk.CTkLabel(self, text="Hodnota zemepisnej dlzky 2:")
         longitude_value_label_2.grid(row=10, column=0, padx=10, pady=5, sticky="w")
         self.longitude_value_entry_2 = ctk.CTkEntry(self)
         self.longitude_value_entry_2.insert(0, self.initial_longitude_value_2)
         self.longitude_value_entry_2.grid(row=10, column=1, padx=10, pady=5, sticky="w")
 
-        # Update Property Button
         update_property_button = ctk.CTkButton(self, text="Upravit", command=self.update_property)
         update_property_button.grid(row=12, column=0, columnspan=3, pady=20, sticky="w", padx=100)
         
 
     def update_property(self):
-        # Retrieve updated values from input fields
         property_number = self.property_number_entry.get().strip()
         description = self.description_entry.get().strip()
         latitude_direction_1 = self.latitude_direction_var_1.get()
@@ -567,8 +534,6 @@ class PropertyUpdate(ctk.CTkToplevel):
         longitude_direction_2 = self.longitude_direction_var_2.get()
         longitude_value_2 = float(self.longitude_value_entry_2.get().strip())
 
-
-        # Update the property using the app method
         self.app.edit_property(
             self.property_id,
             property_number,
@@ -605,7 +570,6 @@ class ParcelUpdate(ctk.CTkToplevel):
         super().__init__(parent)
         self.controller = controller
         self.app = app
-        # Extract data from parcel_data
         self.parcel_id = parcel_data.unique_id
         self.initial_parcel_number = parcel_data.parcel_number
         self.initial_description = parcel_data.description
@@ -618,7 +582,6 @@ class ParcelUpdate(ctk.CTkToplevel):
         self.initial_longitude_direction_2 = parcel_data.boundary[1].longitude_direction
         self.initial_longitude_value_2 = abs(parcel_data.boundary[1].longitude_value)
         
-        # Form fields with pre-filled values
         label = ctk.CTkLabel(self, text="Úprava Parcely", font=("Arial", 20))
         label.grid(row=0, column=0, columnspan=4, pady=20, sticky="w")
 
@@ -634,7 +597,6 @@ class ParcelUpdate(ctk.CTkToplevel):
         self.description_entry.insert(0, self.initial_description)
         self.description_entry.grid(row=2, column=1, padx=10, pady=5, sticky="w")
 
-        # Latitude Direction 1
         latitude_direction_label_1 = ctk.CTkLabel(self, text="Zemepisná šírka 1:")
         latitude_direction_label_1.grid(row=3, column=0, padx=10, pady=5, sticky="w")
         self.latitude_direction_var_1 = ctk.StringVar(value=self.initial_latitude_direction_1)
@@ -643,14 +605,12 @@ class ParcelUpdate(ctk.CTkToplevel):
         latitude_south_checkbox_1 = ctk.CTkRadioButton(self, text="South", variable=self.latitude_direction_var_1, value='S')
         latitude_south_checkbox_1.grid(row=3, column=2, padx=5, pady=5, sticky="w")
 
-        # Latitude Value 1
         latitude_value_label_1 = ctk.CTkLabel(self, text="Hodnota zemepisnej šírky 1:")
         latitude_value_label_1.grid(row=4, column=0, padx=10, pady=5, sticky="w")
         self.latitude_value_entry_1 = ctk.CTkEntry(self)
         self.latitude_value_entry_1.insert(0, self.initial_latitude_value_1)
         self.latitude_value_entry_1.grid(row=4, column=1, padx=10, pady=5, sticky="w")
 
-        # Longitude Direction 1
         longitude_direction_label_1 = ctk.CTkLabel(self, text="Zemepisná dĺžka 1:")
         longitude_direction_label_1.grid(row=5, column=0, padx=10, pady=5, sticky="w")
         self.longitude_direction_var_1 = ctk.StringVar(value=self.initial_longitude_direction_1)
@@ -659,14 +619,12 @@ class ParcelUpdate(ctk.CTkToplevel):
         longitude_west_checkbox_1 = ctk.CTkRadioButton(self, text="West", variable=self.longitude_direction_var_1, value='W')
         longitude_west_checkbox_1.grid(row=5, column=2, padx=5, pady=5, sticky="w")
 
-        # Longitude Value 1
         longitude_value_label_1 = ctk.CTkLabel(self, text="Hodnota zemepisnej dĺžky 1:")
         longitude_value_label_1.grid(row=6, column=0, padx=10, pady=5, sticky="w")
         self.longitude_value_entry_1 = ctk.CTkEntry(self)
         self.longitude_value_entry_1.insert(0, self.initial_longitude_value_1)
         self.longitude_value_entry_1.grid(row=6, column=1, padx=10, pady=5, sticky="w")
 
-        # Latitude Direction 2
         latitude_direction_label_2 = ctk.CTkLabel(self, text="Zemepisná šírka 2:")
         latitude_direction_label_2.grid(row=7, column=0, padx=10, pady=5, sticky="w")
         self.latitude_direction_var_2 = ctk.StringVar(value=self.initial_latitude_direction_2)
@@ -675,14 +633,12 @@ class ParcelUpdate(ctk.CTkToplevel):
         latitude_south_checkbox_2 = ctk.CTkRadioButton(self, text="South", variable=self.latitude_direction_var_2, value='S')
         latitude_south_checkbox_2.grid(row=7, column=2, padx=5, pady=5, sticky="w")
 
-        # Latitude Value 2
         latitude_value_label_2 = ctk.CTkLabel(self, text="Hodnota zemepisnej šírky 2:")
         latitude_value_label_2.grid(row=8, column=0, padx=10, pady=5, sticky="w")
         self.latitude_value_entry_2 = ctk.CTkEntry(self)
         self.latitude_value_entry_2.insert(0, self.initial_latitude_value_2)
         self.latitude_value_entry_2.grid(row=8, column=1, padx=10, pady=5, sticky="w")
 
-        # Longitude Direction 2
         longitude_direction_label_2 = ctk.CTkLabel(self, text="Zemepisná dĺžka 2:")
         longitude_direction_label_2.grid(row=9, column=0, padx=10, pady=5, sticky="w")
         self.longitude_direction_var_2 = ctk.StringVar(value=self.initial_longitude_direction_2)
@@ -691,19 +647,16 @@ class ParcelUpdate(ctk.CTkToplevel):
         longitude_west_checkbox_2 = ctk.CTkRadioButton(self, text="West", variable=self.longitude_direction_var_2, value='W')
         longitude_west_checkbox_2.grid(row=9, column=2, padx=5, pady=5, sticky="w")
 
-        # Longitude Value 2
         longitude_value_label_2 = ctk.CTkLabel(self, text="Hodnota zemepisnej dĺžky 2:")
         longitude_value_label_2.grid(row=10, column=0, padx=10, pady=5, sticky="w")
         self.longitude_value_entry_2 = ctk.CTkEntry(self)
         self.longitude_value_entry_2.insert(0, self.initial_longitude_value_2)
         self.longitude_value_entry_2.grid(row=10, column=1, padx=10, pady=5, sticky="w")
 
-        # Update Parcel Button
         update_parcel_button = ctk.CTkButton(self, text="Upraviť", command=self.update_parcel)
         update_parcel_button.grid(row=12, column=0, columnspan=3, pady=20, sticky="w", padx=100)
 
     def update_parcel(self):
-        # Retrieve updated values from input fields
         parcel_number = self.parcel_number_entry.get().strip()
         description = self.description_entry.get().strip()
         latitude_direction_1 = self.latitude_direction_var_1.get()
@@ -715,7 +668,6 @@ class ParcelUpdate(ctk.CTkToplevel):
         longitude_direction_2 = self.longitude_direction_var_2.get()
         longitude_value_2 = float(self.longitude_value_entry_2.get().strip())
 
-        # Update the parcel using the app method
         self.app.edit_parcel(
             self.parcel_id,
             parcel_number,
@@ -747,126 +699,13 @@ class ParcelUpdate(ctk.CTkToplevel):
 
     def show_alert(self, message):
         messagebox.showerror("Chyba", message)
-class ParcelSearch(ctk.CTkFrame):
-    def __init__(self, parent, controller, app):
-        super().__init__(parent)
-        self.controller = controller
-        self.app = app
-
-        # Latitude Direction
-        latitude_direction_label = ctk.CTkLabel(self, text="Zemepisna sirka:")
-        latitude_direction_label.grid(row=0, column=0, padx=10, pady=5, sticky="w")
-        self.latitude_direction_var = ctk.StringVar()
-        latitude_north_checkbox = ctk.CTkRadioButton(self, text="North", variable=self.latitude_direction_var, value='North')
-        latitude_north_checkbox.grid(row=0, column=1, padx=5, pady=5, sticky="w")
-        latitude_south_checkbox = ctk.CTkRadioButton(self, text="South", variable=self.latitude_direction_var, value='South')
-        latitude_south_checkbox.grid(row=0, column=2, padx=5, pady=5, sticky="w")
-
-        # Latitude Value
-        latitude_value_label = ctk.CTkLabel(self, text="Hodnota zemepisnej sirky:")
-        latitude_value_label.grid(row=1, column=0, padx=10, pady=5, sticky="w")
-        self.latitude_value_entry = ctk.CTkEntry(self)
-        self.latitude_value_entry.grid(row=1, column=1, padx=10, pady=5, sticky="w")
-
-        # Longitude Direction
-        longitude_direction_label = ctk.CTkLabel(self, text="Zemepisna dlzka:")
-        longitude_direction_label.grid(row=2, column=0, padx=10, pady=5, sticky="w")
-        self.longitude_direction_var = ctk.StringVar()
-        longitude_east_checkbox = ctk.CTkRadioButton(self, text="East", variable=self.longitude_direction_var, value='East')
-        longitude_east_checkbox.grid(row=2, column=1, padx=5, pady=5, sticky="w")
-        longitude_west_checkbox = ctk.CTkRadioButton(self, text="West", variable=self.longitude_direction_var, value='West')
-        longitude_west_checkbox.grid(row=2, column=2, padx=5, pady=5, sticky="w")
-
-        # Longitude Value
-        longitude_value_label = ctk.CTkLabel(self, text="Hodnota zemepisnej dlzky:")
-        longitude_value_label.grid(row=3, column=0, padx=10, pady=5, sticky="w")
-        self.longitude_value_entry = ctk.CTkEntry(self)
-        self.longitude_value_entry.grid(row=3, column=1, padx=10, pady=5, sticky="w")
-
-        # Search Button
-        search_button = ctk.CTkButton(self, text="Vyhladaj", command=self.search_parcels)
-        search_button.grid(row=4, column=0, columnspan=3, pady=20, sticky="w", padx=100)
-
-        # Results Container
-        self.results_frame = ctk.CTkFrame(self, width=600, height=300)
-        self.results_frame.grid(row=5, column=0, columnspan=3, padx=10, pady=10, sticky="nsew")
-    
-    def search_parcels(self):
-        latitude_direction = self.latitude_direction_var.get()
-        latitude_value = self.latitude_value_entry.get().strip()
-        longitude_direction = self.longitude_direction_var.get()
-        longitude_value = self.longitude_value_entry.get().strip()
-
-        # Validate the input
-        if latitude_direction not in ['North', 'South']:
-            self.show_alert("Vyberte smer pre zemepisnu sirku (North/South).")
-            return
-        if not self.is_valid_number(latitude_value):
-            self.show_alert("Hodnota zemepisnej sirky musi byt cislo.")
-            return
-        if longitude_direction not in ['East', 'West']:
-            self.show_alert("Vyberte smer pre zemepisnu dlzku (East/West).")
-            return
-        if not self.is_valid_number(longitude_value):
-            self.show_alert("Hodnota zemepisnej dlzky musi byt cislo.")
-            return
-
-        # Convert directions to single letters
-        latitude_direction = latitude_direction[0]  # "North" -> "N", "South" -> "S"
-        longitude_direction = longitude_direction[0]  # "East" -> "E", "West" -> "W"
-        gps_pos = Gps(latitude_direction, float(latitude_value), longitude_direction, float(longitude_value))
         
-        results = self.app.search_parcels_by_gps(gps_pos)
-        self.display_results(results)
-    
-    def display_results(self, results):
-        # Clear previous results
-        for widget in self.results_frame.winfo_children():
-            widget.destroy()
-
-        if not results:
-            no_results_label = ctk.CTkLabel(self.results_frame, text="No parcels found.")
-            no_results_label.grid(row=0, column=0, padx=10, pady=5, sticky="w")
-            return
-
-        for idx, parcel in enumerate(results):
-            parcel_label = ctk.CTkLabel(self.results_frame, text=str(parcel))
-            parcel_label.grid(row=idx, column=0, padx=10, pady=5, sticky="w")
-
-            edit_button = ctk.CTkButton(self.results_frame, text="Edit", command=lambda p=parcel: self.edit_parcel(p))
-            edit_button.grid(row=idx, column=1, padx=5, pady=5)
-
-            delete_button = ctk.CTkButton(self.results_frame, text="Delete", command=lambda p=parcel: self.delete_parcel(p))
-            delete_button.grid(row=idx, column=2, padx=5, pady=5)
-
-    def edit_parcel(self, parcel):
-        # Implement logic to edit the parcel
-        pass
-
-    def delete_parcel(self, parcel):
-        if messagebox.askyesno("Potvrdenie vymazania", "Naozaj chcete vymazat tuto parcelu?"):
-            self.app.delete_parcel(parcel)
-    
-    def show_alert(self, message):
-        messagebox.showerror("Chyba", message)
-    
-    def is_valid_number(self, value):
-        try:
-            float(value)
-            return True
-        except ValueError:
-            return False
-
-
-
-# Property Search Frame
 class PropertySearch(ctk.CTkFrame):
     def __init__(self, parent, controller, app):
         super().__init__(parent)
         self.controller = controller
         self.app = app
 
-        # Latitude Direction
         latitude_direction_label = ctk.CTkLabel(self, text="Zemepisna sirka:")
         latitude_direction_label.grid(row=0, column=0, padx=10, pady=5, sticky="w")
         self.latitude_direction_var = ctk.StringVar()
@@ -875,13 +714,11 @@ class PropertySearch(ctk.CTkFrame):
         latitude_south_checkbox = ctk.CTkRadioButton(self, text="South", variable=self.latitude_direction_var, value='South')
         latitude_south_checkbox.grid(row=0, column=2, padx=5, pady=5, sticky="w")
 
-        # Latitude Value
         latitude_value_label = ctk.CTkLabel(self, text="Hodnota zemepisnej sirky:")
         latitude_value_label.grid(row=1, column=0, padx=10, pady=5, sticky="w")
         self.latitude_value_entry = ctk.CTkEntry(self)
         self.latitude_value_entry.grid(row=1, column=1, padx=10, pady=5, sticky="w")
 
-        # Longitude Direction
         longitude_direction_label = ctk.CTkLabel(self, text="Zemepisna dlzka:")
         longitude_direction_label.grid(row=2, column=0, padx=10, pady=5, sticky="w")
         self.longitude_direction_var = ctk.StringVar()
@@ -890,18 +727,14 @@ class PropertySearch(ctk.CTkFrame):
         longitude_west_checkbox = ctk.CTkRadioButton(self, text="West", variable=self.longitude_direction_var, value='West')
         longitude_west_checkbox.grid(row=2, column=2, padx=5, pady=5, sticky="w")
 
-        # Longitude Value
         longitude_value_label = ctk.CTkLabel(self, text="Hodnota zemepisnej dlzky:")
         longitude_value_label.grid(row=3, column=0, padx=10, pady=5, sticky="w")
         self.longitude_value_entry = ctk.CTkEntry(self)
         self.longitude_value_entry.grid(row=3, column=1, padx=10, pady=5, sticky="w")
 
-        # Search Button
         search_button = ctk.CTkButton(self, text="Vyhladaj", command=self.search_properties)
         search_button.grid(row=4, column=0, columnspan=3, pady=20, sticky="w", padx=100)
-
-       
-        # Results Container
+        
         self.results_frame = ctk.CTkFrame(self, width=600, height=800)
         self.results_frame.grid(row=5, column=0, columnspan=3, padx=10, pady=10, sticky="nsew")
         
@@ -912,7 +745,6 @@ class PropertySearch(ctk.CTkFrame):
         longitude_direction = self.longitude_direction_var.get()
         longitude_value = self.longitude_value_entry.get().strip()
 
-        # Validate the input
         if latitude_direction not in ['North', 'South']:
             self.show_alert("Vyberte smer pre zemepisnu sirku (North/South).")
             return
@@ -926,7 +758,6 @@ class PropertySearch(ctk.CTkFrame):
             self.show_alert("Hodnota zemepisnej dlzky musi byt cislo.")
             return
 
-        # Convert directions to single letters
         latitude_direction = latitude_direction[0]  # "North" -> "N", "South" -> "S"
         longitude_direction = longitude_direction[0]  # "East" -> "E", "West" -> "W"
         gps_pos = Gps(latitude_direction, float(latitude_value), longitude_direction, float(longitude_value))
@@ -936,7 +767,6 @@ class PropertySearch(ctk.CTkFrame):
         
         self.display_results(results)
     def display_results(self, results):
-        # Clear previous results
         for widget in self.results_frame.winfo_children():
             widget.destroy()
 
@@ -960,7 +790,6 @@ class PropertySearch(ctk.CTkFrame):
         
 
     def delete_property(self, property):
-        #threading.Thread(target=self.delete_property, args=(property,)).start()
         if messagebox.askyesno("Potvrdenie vymazania", "Naozaj chcete vymazat tuto nehnutelnost?"):
             self.app.delete_property(property)
 
@@ -981,7 +810,6 @@ class ParcelSearch(ctk.CTkFrame):
         self.controller = controller
         self.app = app
 
-        # Latitude Direction
         latitude_direction_label = ctk.CTkLabel(self, text="Zemepisna sirka:")
         latitude_direction_label.grid(row=0, column=0, padx=10, pady=5, sticky="w")
         self.latitude_direction_var = ctk.StringVar()
@@ -990,13 +818,11 @@ class ParcelSearch(ctk.CTkFrame):
         latitude_south_checkbox = ctk.CTkRadioButton(self, text="South", variable=self.latitude_direction_var, value='South')
         latitude_south_checkbox.grid(row=0, column=2, padx=5, pady=5, sticky="w")
 
-        # Latitude Value
         latitude_value_label = ctk.CTkLabel(self, text="Hodnota zemepisnej sirky:")
         latitude_value_label.grid(row=1, column=0, padx=10, pady=5, sticky="w")
         self.latitude_value_entry = ctk.CTkEntry(self)
         self.latitude_value_entry.grid(row=1, column=1, padx=10, pady=5, sticky="w")
 
-        # Longitude Direction
         longitude_direction_label = ctk.CTkLabel(self, text="Zemepisna dlzka:")
         longitude_direction_label.grid(row=2, column=0, padx=10, pady=5, sticky="w")
         self.longitude_direction_var = ctk.StringVar()
@@ -1005,17 +831,14 @@ class ParcelSearch(ctk.CTkFrame):
         longitude_west_checkbox = ctk.CTkRadioButton(self, text="West", variable=self.longitude_direction_var, value='West')
         longitude_west_checkbox.grid(row=2, column=2, padx=5, pady=5, sticky="w")
 
-        # Longitude Value
         longitude_value_label = ctk.CTkLabel(self, text="Hodnota zemepisnej dlzky:")
         longitude_value_label.grid(row=3, column=0, padx=10, pady=5, sticky="w")
         self.longitude_value_entry = ctk.CTkEntry(self)
         self.longitude_value_entry.grid(row=3, column=1, padx=10, pady=5, sticky="w")
 
-        # Search Button
         search_button = ctk.CTkButton(self, text="Vyhladaj", command=self.search_parcels)
         search_button.grid(row=4, column=0, columnspan=3, pady=20, sticky="w", padx=100)
 
-        # Results Container
         self.results_frame = ctk.CTkFrame(self, width=600, height=300)
         self.results_frame.grid(row=5, column=0, columnspan=3, padx=10, pady=10, sticky="nsew")
     
@@ -1025,7 +848,6 @@ class ParcelSearch(ctk.CTkFrame):
         longitude_direction = self.longitude_direction_var.get()
         longitude_value = self.longitude_value_entry.get().strip()
 
-        # Validate the input
         if latitude_direction not in ['North', 'South']:
             self.show_alert("Vyberte smer pre zemepisnu sirku (North/South).")
             return
@@ -1038,8 +860,7 @@ class ParcelSearch(ctk.CTkFrame):
         if not self.is_valid_number(longitude_value):
             self.show_alert("Hodnota zemepisnej dlzky musi byt cislo.")
             return
-
-        # Convert directions to single letters
+        
         latitude_direction = latitude_direction[0]  # "North" -> "N", "South" -> "S"
         longitude_direction = longitude_direction[0]  # "East" -> "E", "West" -> "W"
         gps_pos = Gps(latitude_direction, float(latitude_value), longitude_direction, float(longitude_value))
@@ -1048,7 +869,6 @@ class ParcelSearch(ctk.CTkFrame):
         self.display_results(results)
     
     def display_results(self, results):
-        # Clear previous results
         for widget in self.results_frame.winfo_children():
             widget.destroy()
 
@@ -1084,8 +904,6 @@ class ParcelSearch(ctk.CTkFrame):
         except ValueError:
             return False
 
-
-# Search All Frame
 class SearchAll(ctk.CTkFrame):
     def __init__(self, parent, controller, app):
         super().__init__(parent)
@@ -1094,7 +912,6 @@ class SearchAll(ctk.CTkFrame):
         label = ctk.CTkLabel(self, text="Nehnutelnosti a Parcely", font=("Arial", 20))
         label.grid(row=0, column=0, columnspan=4, pady=20, sticky="w")
 
-        # First GPS Coordinates
         latitude_direction_label_1 = ctk.CTkLabel(self, text="Zemepisna sirka 1:")
         latitude_direction_label_1.grid(row=1, column=0, padx=10, pady=5, sticky="w")
         self.latitude_direction_var_1 = ctk.StringVar()
@@ -1121,7 +938,6 @@ class SearchAll(ctk.CTkFrame):
         self.longitude_value_entry_1 = ctk.CTkEntry(self)
         self.longitude_value_entry_1.grid(row=4, column=1, padx=10, pady=5, sticky="w")
 
-        # Second GPS Coordinates
         latitude_direction_label_2 = ctk.CTkLabel(self, text="Zemepisna sirka 2:")
         latitude_direction_label_2.grid(row=5, column=0, padx=10, pady=5, sticky="w")
         self.latitude_direction_var_2 = ctk.StringVar()
@@ -1148,11 +964,9 @@ class SearchAll(ctk.CTkFrame):
         self.longitude_value_entry_2 = ctk.CTkEntry(self)
         self.longitude_value_entry_2.grid(row=8, column=1, padx=10, pady=5, sticky="w")
 
-      
         search_button = ctk.CTkButton(self, text="Hladaj", command=self.search_all_properties)
         search_button.grid(row=9, column=0, columnspan=3, pady=20, sticky="ew", padx=10)
 
-        
         results_label = ctk.CTkLabel(self, text="Vysledky vyhladavania:")
         results_label.grid(row=10, column=0, columnspan=4, pady=10, sticky="w")
         
@@ -1197,19 +1011,15 @@ class SearchAll(ctk.CTkFrame):
             self.show_alert("Hodnota druhej zemepisnej dlzky musi byt cislo.")
             return
 
-        # Convert directions to single letters
         latitude_direction_1 = latitude_direction_1[0]  # "North" -> "N", "South" -> "S"
         longitude_direction_1 = longitude_direction_1[0]  # "East" -> "E", "West" -> "W"
         latitude_direction_2 = latitude_direction_2[0]  # "North" -> "N", "South" -> "S"
         longitude_direction_2 = longitude_direction_2[0]  # "East" -> "E", "West" -> "W"
 
-       
         gps_1 = Gps(latitude_direction_1, float(latitude_value_1), longitude_direction_1, float(longitude_value_1))
         gps_2 = Gps(latitude_direction_2, float(latitude_value_2), longitude_direction_2, float(longitude_value_2))
 
-      
         results = self.app.search_all_by_gps(gps_1, gps_2)
-
         
         self.display_results(results)
 
@@ -1234,7 +1044,7 @@ class SearchAll(ctk.CTkFrame):
             return True
         except ValueError:
             return False
-# Tester Frame
+
 class Tester(ctk.CTkFrame):
     def __init__(self, parent, controller, app):
         super().__init__(parent)
@@ -1243,7 +1053,6 @@ class Tester(ctk.CTkFrame):
         label = ctk.CTkLabel(self, text="Tester", font=("Arial", 20))
         label.grid(row=0, column=0, columnspan=3, pady=20, sticky="w")
 
-              
         self.action_frame = ctk.CTkFrame(self)
         self.action_frame.grid(row=2, column=0, columnspan=3, pady=10, padx=10, sticky="nsew")
         add_label = ctk.CTkLabel(self.action_frame, text="Otestuj pridavanie", font=("Arial", 16))
@@ -1294,7 +1103,6 @@ class FileHandler(ctk.CTkFrame):
         load_button.grid(row=2, column=1, pady=10, padx=10, sticky="w")
 
     def save_to_file(self):
-        # Get filename from entry
         filename = self.filename_entry.get().strip()
         if not filename:
             self.show_alert("Prosím, zadajte názov súboru.")
@@ -1303,9 +1111,7 @@ class FileHandler(ctk.CTkFrame):
         self.__app.save_to_file(filename)
         self.show_success_message("Dáta boli úspešne uložené.")
        
-
     def load_from_file(self):
-        # Get filename from entry
         filename = self.filename_entry.get().strip()
         if not filename:
             self.show_alert("Prosím, zadajte názov súboru.")

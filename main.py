@@ -14,10 +14,10 @@ from Locations.Parcel import Parcel
 def main():
     
     operationGenerator = OpGenerator()
-    """ operationGenerator.generate_inserts(1000)
-    operationGenerator.generate_searches()
-    operationGenerator.generate_deletes() """
-    operationGenerator.test()
+    #operationGenerator.generate_inserts(10000)
+    #operationGenerator.generate_searches()
+    #operationGenerator.generate_deletes() 
+    #operationGenerator.test()
 
     
     geo_app = GeoApp()

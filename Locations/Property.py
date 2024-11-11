@@ -4,7 +4,7 @@ from Locations.Area import Area
 
 class Property(Area):
     def __init__(self, unique_id, property_number, description, boundary):
-        super().__init__(unique_id, boundary, description, property_number)
+        super().__init__(unique_id, boundary, description)
         self.__property_number = property_number
         self.__parcels = []       
         
