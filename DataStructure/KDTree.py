@@ -108,7 +108,7 @@ class KDTree:
             depth += 1
         return None    
     
-    def update_data(self, key, data, new_data):
+    def update(self, key, data, new_data):
         node_to_update = self.search_with_data(key, data)
         old_data = node_to_update.data
         if node_to_update is not None:

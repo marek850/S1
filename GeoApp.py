@@ -200,14 +200,14 @@ class GeoApp:
             self.add_property(new_property_number, new_description, new_start_lat_dir, new_start_latitude, new_start_long_dir, new_start_longtitude,  new_end_lat_dir, \
                 new_end_latitude, new_end_long_dir, new_end_longtitude)
         else:
-            old_property = self.properties_tree.update_data(initial_node_start.keys, initial_node_start.data,  new_node_start.data)
+            old_property = self.properties_tree.update(initial_node_start.keys, initial_node_start.data,  new_node_start.data)
             new_property.parcels = old_property.parcels
             for parcel in old_property.parcels:
                 parcel.remove_property(old_property)
                 parcel.add_property(new_property)
-            self.properties_tree.update_data(initial_node_end.keys, initial_node_end.data,  new_node_end.data)
-            self.all_tree.update_data(initial_node_start.keys, initial_node_start.data,  new_node_start.data)
-            self.all_tree.update_data(initial_node_end.keys, initial_node_end.data,  new_node_end.data)
+            self.properties_tree.update(initial_node_end.keys, initial_node_end.data,  new_node_end.data)
+            self.all_tree.update(initial_node_start.keys, initial_node_start.data,  new_node_start.data)
+            self.all_tree.update(initial_node_end.keys, initial_node_end.data,  new_node_end.data)
             
     def edit_parcel(self, parcel_id, new_parcel_number, new_description, new_start_lat_dir, new_start_latitude, new_start_long_dir, new_start_longtitude,  new_end_lat_dir, \
         new_end_latitude, new_end_long_dir, new_end_longtitude, initial_parcel_number, initial_description, initial_start_lat_dir, \
@@ -229,14 +229,14 @@ class GeoApp:
             self.add_parcel(new_parcel_number, new_description, new_start_lat_dir, new_start_latitude, new_start_long_dir, new_start_longtitude,  new_end_lat_dir, \
                 new_end_latitude, new_end_long_dir, new_end_longtitude)
         else:
-            old_parcel = self.parcels_tree.update_data(initial_node_start.keys, initial_node_start.data,  new_node_start.data)
+            old_parcel = self.parcels_tree.update(initial_node_start.keys, initial_node_start.data,  new_node_start.data)
             new_parcel.properties = old_parcel.properties
             for property in old_parcel.properties:
                 property.remove_parcel(old_parcel)
                 property.add_parcel(new_parcel)
-            self.parcels_tree.update_data(initial_node_end.keys, initial_node_end.data,  new_node_end.data)
-            self.all_tree.update_data(initial_node_start.keys, initial_node_start.data,  new_node_start.data)
-            self.all_tree.update_data(initial_node_end.keys, initial_node_end.data,  new_node_end.data)      
+            self.parcels_tree.update(initial_node_end.keys, initial_node_end.data,  new_node_end.data)
+            self.all_tree.update(initial_node_start.keys, initial_node_start.data,  new_node_start.data)
+            self.all_tree.update(initial_node_end.keys, initial_node_end.data,  new_node_end.data)      
     def test_add(self, operations, overlap):
         
         return self.__data_generator.generate_inserts(operations, overlap)   

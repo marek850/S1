@@ -1,8 +1,8 @@
 #nehnutelnost
-from Locations.Area import Area
+from Locations.Area import AreaUnit
 
 
-class Property(Area):
+class Property(AreaUnit):
     def __init__(self, unique_id, property_number, description, boundary):
         super().__init__(unique_id, boundary, description)
         self.__property_number = property_number

@@ -1,4 +1,5 @@
-class KDNode:
+from 
+class KDNode(IDataNode):
     def __init__(self, keys: tuple, data):
         self.__dim = 0
         self.__keys = keys         # Tuple klucov

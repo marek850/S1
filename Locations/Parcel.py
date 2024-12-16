@@ -1,7 +1,7 @@
-from Locations.Area import Area
+from Locations.Area import AreaUnit
 
 
-class Parcel(Area):
+class Parcel(AreaUnit):
     def __init__(self, unique_id, parcel_number, description, boundary):
         super().__init__(unique_id, boundary, description)
         self.__parcel_number = parcel_number
@@ -24,9 +24,7 @@ class Parcel(Area):
         
     def __str__(self):
         return f"Parcela {self.__parcel_number}: {self.description}, Zaciatok: {self.boundary[0]}, Koniec: {self.boundary[1]}\n"
-    def get_data(self):
-        return "".join(f"par,{self.unique_id},{self.__parcel_number},{self.description},{self.start_lat_dir},{abs(self.start_lat)},{self.start_lon_dir},\
-                       {abs(self.start_lon)},{self.end_lat_dir},{self.end_lat},{self.end_lon_dir},{self.end_lon}")
+    
     @property
     def parcel_number(self):
         return self.__parcel_number

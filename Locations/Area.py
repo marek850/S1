@@ -3,7 +3,7 @@ from typing import Tuple
 
 from Locations import GpsPosition
 
-class Area(ABC):
+class AreaUnit(ABC):
     def __init__(self, unique_id: int, boundary: tuple, description: str):
         self.__unique_id = unique_id
         self.__boundary = boundary

@@ -5,7 +5,7 @@ from DataStructure.KDNode import KDNode
 from GUI.MainApp import MainApp
 from GeoApp import GeoApp
 from Locations.GpsPosition import GPSPosition
-from Locations.Area import Area
+from Locations.Area import AreaUnit
 from Locations.Parcel import Parcel
 
 
