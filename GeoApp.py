@@ -1,4 +1,5 @@
 import random
+from DataStructure.IDataStructureFactory import IDataStructureFactory
 from DataStructure.KDTree import KDTree
 from DataStructure.KDNode import KDNode
 from Locations.Parcel import Parcel, ParcelGui
@@ -10,10 +11,10 @@ from DataGeneration.DataGenerator import DataGenerator
 from FileProcessing.FileProcessor import FileHandler
 
 class GeoApp:
-    def __init__(self):
-        self.__properties_tree = KDTree()
-        self.__parcels_tree = KDTree()
-        self.__all_tree = KDTree() 
+    def __init__(self, factory: IDataStructureFactory):
+        self.__properties_tree = factory.create_structure()
+        self.__parcels_tree = factory.create_structure()
+        self.__all_tree = factory.create_structure() 
         self.__generator = Generator()
         self.__data_generator = DataGenerator(self.__parcels_tree, self.__properties_tree, self.__all_tree, self)
         self.__last_unique_id = random.randint(1, 10000000)

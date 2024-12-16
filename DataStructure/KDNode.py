@@ -1,8 +1,8 @@
-from 
+from DataStructure.Node import IDataNode
 class KDNode(IDataNode):
-    def __init__(self, keys: tuple, data):
+    def __init__(self, key: tuple, data):
         self.__dim = 0
-        self.__keys = keys         # Tuple klucov
+        self.__keys = key         # Tuple klucov
         self.__data = data
         self.__parent = None        # Rodič
         self.__left = None          # Ľavý syn

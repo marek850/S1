@@ -1,8 +1,9 @@
 
+from DataStructure.DataStructure import IDataStructure
 from DataStructure.KDNode import KDNode
 
 
-class KDTree:
+class KDTree(IDataStructure):
     def __init__(self, dimensions=2):
         self.__dim = dimensions
         self.__root = None
