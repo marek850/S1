@@ -25,8 +25,7 @@ class Property(AreaUnit):
              
              
     def get_data(self):
-        return "".join(f"pro,{self.unique_id},{self.property_number},{self.description},{self.start_lat_dir},{abs(self.start_lat)},{self.start_lon_dir},\
-                       {abs(self.start_lon)},{self.end_lat_dir},{self.end_lat},{self.end_lon_dir},{self.end_lon}")   
+        return "".join(f"pro,{self.unique_id},{self.property_number},{self.description},{self.start_lat_dir},{abs(self.start_lat)},{self.start_lon_dir},{abs(self.start_lon)},{self.end_lat_dir},{self.end_lat},{self.end_lon_dir},{self.end_lon}")   
     @property
     def property_number(self):
         return self.__property_number

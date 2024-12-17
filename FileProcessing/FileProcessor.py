@@ -1,25 +1,19 @@
 class FileHandler:
-    def __init__(self, filename, app):
+    def __init__(self, filename, app, strategy):
+        """
+        Initialize FileHandler with a filename, app instance, and file strategy.
+        :param filename: Name of the file to read/write.
+        :param app: GeoApp instance.
+        :param strategy: Instance of IFileStrategy.
+        """
         self.__filename = filename
         self.__app = app
+        self.__strategy = strategy  # Strategy for saving/loading
 
     def save_to_file(self, data):
-        
-        with open(self.__filename, "w") as file:
-            for element in data:
-                line = element.get_data()  
-                file.write(line + "\n")  
+        """Save data using the provided strategy."""
+        self.__strategy.save(self.__filename, data)
 
     def load_from_file(self):
-        
-        with open(self.__filename, "r") as file:
-            for line in file:
-                row = line.strip().split(",") 
-                if row[0] == "par":
-                    self.__app.add_parcel(row[2], row[3], \
-                        row[4], abs(float(row[5])), row[6], abs(float(row[7])), row[8], abs(float(row[9])), \
-                            row[10], abs(float(row[11])))
-                elif row[0] == "pro":
-                    self.__app.add_property(row[2], row[3], \
-                        row[4], abs(float(row[5])), row[6], abs(float(row[7])), row[8], abs(float(row[9])), \
-                            row[10], abs(float(row[11])))
+        """Load data using the provided strategy."""
+        self.__strategy.load(self.__filename, self.__app)

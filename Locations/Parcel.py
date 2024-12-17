@@ -20,7 +20,8 @@ class Parcel(AreaUnit):
         self.properties.append(property)
     def remove_property(self, property):
        self.properties.remove(property)
-        
+    def get_data(self):
+        return "".join(f"par,{self.unique_id},{self.__parcel_number},{self.description},{self.start_lat_dir},{abs(self.start_lat)},{self.start_lon_dir},{abs(self.start_lon)},{self.end_lat_dir},{self.end_lat},{self.end_lon_dir},{self.end_lon}")    
         
     def __str__(self):
         return f"Parcela {self.__parcel_number}: {self.description}, Zaciatok: {self.boundary[0]}, Koniec: {self.boundary[1]}\n"

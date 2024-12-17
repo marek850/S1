@@ -3,6 +3,7 @@ from tkinter import messagebox
 import customtkinter as ctk
 import tkinter
 from Locations.GpsPosition import GPSPosition as Gps
+from UserInterface.MainAppMediator import MainAppMediator
 
 class MainApp(ctk.CTk):
     def __init__(self, app):
@@ -10,7 +11,8 @@ class MainApp(ctk.CTk):
         self.title("Magula S1")
         self.geometry("1280x720")
         self.app = app
-
+        self.mediator = MainAppMediator(app)
+        
         self.grid_columnconfigure(0, weight=1)  
         self.grid_columnconfigure(1, weight=4)  
         self.grid_rowconfigure(0, weight=1)     
@@ -26,7 +28,7 @@ class MainApp(ctk.CTk):
 
         self.frames = {}
         for F in (PropertyInsert, ParcelInsert,  PropertySearch,  ParcelSearch, SearchAll, Tester, FileHandler):
-            frame = F(parent=self.container, controller=self, app=self.app)
+            frame = F(parent=self.container, controller=self, app=self.app, mediator=self.mediator)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
 
@@ -71,10 +73,11 @@ class MenuFrame(ctk.CTkFrame):
 
 # Property Insert Frame
 class PropertyInsert(ctk.CTkFrame):
-    def __init__(self, parent, controller, app):
+    def __init__(self, parent, controller, app, mediator):
         super().__init__(parent)
         self.controller = controller
         self.app = app
+        self.mediator = mediator
         
         label = ctk.CTkLabel(self, text="Pridanie Nehnutelnosti", font=("Arial", 20))
         label.grid(row=0, column=0, columnspan=4, pady=20, sticky="w")
@@ -210,8 +213,9 @@ class PropertyInsert(ctk.CTkFrame):
         latitude_direction_2 = latitude_direction_2[0]
         longitude_direction_2 = longitude_direction_2[0]
         self.update()
-        
-        self.app.add_property(
+        self.mediator.notify(
+            self, 
+            "add_property", 
             property_number,
             description,
             latitude_direction_1,
@@ -222,11 +226,20 @@ class PropertyInsert(ctk.CTkFrame):
             latitude_value_2, 
             longitude_direction_2,
             longitude_value_2
-        )
-        self.update()
+            )
+        """ self.app.add_property(
+            property_number,
+            description,
+            latitude_direction_1,
+            latitude_value_1, 
+            longitude_direction_1,
+            longitude_value_1,  
+            latitude_direction_2,
+            latitude_value_2, 
+            longitude_direction_2,
+            longitude_value_2
+        ) """
         self.clear_form()
-        self.update()
-        self.show_success_message()
     def startAddProperty(self):
         threading.Thread(target=self.add_property).start()
         
@@ -257,10 +270,11 @@ class PropertyInsert(ctk.CTkFrame):
             return False
 
 class ParcelInsert(ctk.CTkFrame):
-    def __init__(self, parent, controller, app):
+    def __init__(self, parent, controller, app, mediator):
         super().__init__(parent)
         self.controller = controller
         self.app = app
+        self.mediator = mediator
 
         
         label = ctk.CTkLabel(self, text="Pridanie Parcely", font=("Arial", 20))
@@ -385,9 +399,10 @@ class ParcelInsert(ctk.CTkFrame):
         longitude_direction_1 = longitude_direction_1[0]  # "East" -> "E", "West" -> "W"
         latitude_direction_2 = latitude_direction_2[0]
         longitude_direction_2 = longitude_direction_2[0]
-        self.update()
         
-        self.app.add_parcel(
+        self.mediator.notify(
+            self,
+            "add_parcel",
             parcel_number,
             description,
             latitude_direction_1,
@@ -399,9 +414,19 @@ class ParcelInsert(ctk.CTkFrame):
             longitude_direction_2,
             longitude_value_2
         )
+        """ self.app.add_parcel(
+            parcel_number,
+            description,
+            latitude_direction_1,
+            latitude_value_1, 
+            longitude_direction_1,
+            longitude_value_1,  
+            latitude_direction_2,
+            latitude_value_2, 
+            longitude_direction_2,
+            longitude_value_2
+        ) """
         self.clear_form()
-        self.update()
-        self.show_success_message()
     def startAddParcel(self):
         threading.Thread(target=self.add_parcel).start()
         
@@ -431,10 +456,11 @@ class ParcelInsert(ctk.CTkFrame):
             return False
 
 class PropertyUpdate(ctk.CTkToplevel):
-    def __init__(self, parent, controller, app, property_data):
+    def __init__(self, parent, controller, app, property_data, mediator):
         super().__init__(parent)
         self.controller = controller
         self.app = app
+        self.mediator = mediator
         self.property_id = property_data.unique_id
         self.initial_property_number = property_data.property_number
         self.initial_description = property_data.description
@@ -533,8 +559,9 @@ class PropertyUpdate(ctk.CTkToplevel):
         latitude_value_2 = float(self.latitude_value_entry_2.get().strip())
         longitude_direction_2 = self.longitude_direction_var_2.get()
         longitude_value_2 = float(self.longitude_value_entry_2.get().strip())
-
-        self.app.edit_property(
+        self.mediator.notify(
+            self,
+            "update_property",
             self.property_id,
             property_number,
             description,
@@ -557,7 +584,30 @@ class PropertyUpdate(ctk.CTkToplevel):
             self.initial_longitude_direction_2,
             self.initial_longitude_value_2
         )
-        self.show_success_message()
+        """ self.app.edit_property(
+            self.property_id,
+            property_number,
+            description,
+            latitude_direction_1,
+            latitude_value_1,
+            longitude_direction_1,
+            longitude_value_1,
+            latitude_direction_2,
+            latitude_value_2,
+            longitude_direction_2,
+            longitude_value_2,
+            self.initial_property_number,
+            self.initial_description,
+            self.initial_latitude_direction_1,
+            self.initial_latitude_value_1,
+            self.initial_longitude_direction_1,
+            self.initial_longitude_value_1,
+            self.initial_latitude_direction_2,
+            self.initial_latitude_value_2,
+            self.initial_longitude_direction_2,
+            self.initial_longitude_value_2
+        )
+        self.show_success_message() """
         self.destroy()
 
     def show_success_message(self):
@@ -566,10 +616,11 @@ class PropertyUpdate(ctk.CTkToplevel):
     def show_alert(self, message):
         messagebox.showerror("Chyba", message)
 class ParcelUpdate(ctk.CTkToplevel):
-    def __init__(self, parent, controller, app, parcel_data):
+    def __init__(self, parent, controller, app, parcel_data, mediator):
         super().__init__(parent)
         self.controller = controller
         self.app = app
+        self.mediator = mediator
         self.parcel_id = parcel_data.unique_id
         self.initial_parcel_number = parcel_data.parcel_number
         self.initial_description = parcel_data.description
@@ -667,7 +718,32 @@ class ParcelUpdate(ctk.CTkToplevel):
         latitude_value_2 = float(self.latitude_value_entry_2.get().strip())
         longitude_direction_2 = self.longitude_direction_var_2.get()
         longitude_value_2 = float(self.longitude_value_entry_2.get().strip())
-
+        self.mediator.notify(
+            self,
+            "update_parcel",
+            self.parcel_id,
+            parcel_number,
+            description,
+            latitude_direction_1,
+            latitude_value_1,
+            longitude_direction_1,
+            longitude_value_1,
+            latitude_direction_2,
+            latitude_value_2,
+            longitude_direction_2,
+            longitude_value_2,
+            self.initial_parcel_number,
+            self.initial_description,
+            self.initial_latitude_direction_1,
+            self.initial_latitude_value_1,
+            self.initial_longitude_direction_1,
+            self.initial_longitude_value_1,
+            self.initial_latitude_direction_2,
+            self.initial_latitude_value_2,
+            self.initial_longitude_direction_2,
+            self.initial_longitude_value_2
+        )
+        """ 
         self.app.edit_parcel(
             self.parcel_id,
             parcel_number,
@@ -691,7 +767,7 @@ class ParcelUpdate(ctk.CTkToplevel):
             self.initial_longitude_direction_2,
             self.initial_longitude_value_2
         )
-        self.show_success_message()
+        self.show_success_message() """
         self.destroy()
 
     def show_success_message(self):
@@ -701,11 +777,12 @@ class ParcelUpdate(ctk.CTkToplevel):
         messagebox.showerror("Chyba", message)
         
 class PropertySearch(ctk.CTkFrame):
-    def __init__(self, parent, controller, app):
+    def __init__(self, parent, controller, app, mediator):
         super().__init__(parent)
         self.controller = controller
         self.app = app
-
+        self.mediator = mediator
+        
         latitude_direction_label = ctk.CTkLabel(self, text="Zemepisna sirka:")
         latitude_direction_label.grid(row=0, column=0, padx=10, pady=5, sticky="w")
         self.latitude_direction_var = ctk.StringVar()
@@ -762,7 +839,7 @@ class PropertySearch(ctk.CTkFrame):
         longitude_direction = longitude_direction[0]  # "East" -> "E", "West" -> "W"
         gps_pos = Gps(latitude_direction, float(latitude_value), longitude_direction, float(longitude_value))
         
-        results = self.app.search_properties_by_gps(gps_pos)
+        results = self.mediator.request(self, "search_properties", gps_pos)
 
         
         self.display_results(results)
@@ -786,12 +863,16 @@ class PropertySearch(ctk.CTkFrame):
             delete_button.grid(row=idx, column=2, padx=5, pady=5)
 
     def edit_property(self, property):
-        PropertyUpdate(self, self.controller, self.app, property)
+        PropertyUpdate(self, self.controller, self.app, property, self.mediator)
         
 
     def delete_property(self, property):
         if messagebox.askyesno("Potvrdenie vymazania", "Naozaj chcete vymazat tuto nehnutelnost?"):
-            self.app.delete_property(property)
+            self.mediator.notify(
+                self, 
+                "property_delete", 
+                property
+                )
 
     def show_alert(self, message):
         
@@ -805,11 +886,12 @@ class PropertySearch(ctk.CTkFrame):
             return False
     
 class ParcelSearch(ctk.CTkFrame):
-    def __init__(self, parent, controller, app):
+    def __init__(self, parent, controller, app, mediator):
         super().__init__(parent)
         self.controller = controller
         self.app = app
-
+        self.mediator = mediator
+        
         latitude_direction_label = ctk.CTkLabel(self, text="Zemepisna sirka:")
         latitude_direction_label.grid(row=0, column=0, padx=10, pady=5, sticky="w")
         self.latitude_direction_var = ctk.StringVar()
@@ -865,7 +947,7 @@ class ParcelSearch(ctk.CTkFrame):
         longitude_direction = longitude_direction[0]  # "East" -> "E", "West" -> "W"
         gps_pos = Gps(latitude_direction, float(latitude_value), longitude_direction, float(longitude_value))
         
-        results = self.app.search_parcels_by_gps(gps_pos)
+        results = self.mediator.request(self, "search_parcels", gps_pos)
         self.display_results(results)
     
     def display_results(self, results):
@@ -888,11 +970,11 @@ class ParcelSearch(ctk.CTkFrame):
             delete_button.grid(row=idx, column=2, padx=5, pady=5)
 
     def edit_parcel(self, parcel):
-        ParcelUpdate(self, self.controller, self.app, parcel)
+        ParcelUpdate(self, self.controller, self.app, parcel, self.mediator)
 
     def delete_parcel(self, parcel):
         if messagebox.askyesno("Potvrdenie vymazania", "Naozaj chcete vymazat tuto parcelu?"):
-            self.app.delete_parcel(parcel)
+            self.mediator.notify(self, "parcel_delete", parcel)
     
     def show_alert(self, message):
         messagebox.showerror("Chyba", message)
@@ -905,10 +987,11 @@ class ParcelSearch(ctk.CTkFrame):
             return False
 
 class SearchAll(ctk.CTkFrame):
-    def __init__(self, parent, controller, app):
+    def __init__(self, parent, controller, app, mediator):
         super().__init__(parent)
         self.controller = controller
         self.app = app
+        self.mediator = mediator
         label = ctk.CTkLabel(self, text="Nehnutelnosti a Parcely", font=("Arial", 20))
         label.grid(row=0, column=0, columnspan=4, pady=20, sticky="w")
 
@@ -1019,7 +1102,7 @@ class SearchAll(ctk.CTkFrame):
         gps_1 = Gps(latitude_direction_1, float(latitude_value_1), longitude_direction_1, float(longitude_value_1))
         gps_2 = Gps(latitude_direction_2, float(latitude_value_2), longitude_direction_2, float(longitude_value_2))
 
-        results = self.app.search_all_by_gps(gps_1, gps_2)
+        results = self.mediator.request(self, "search_all_properties", gps_1, gps_2)
         
         self.display_results(results)
 
@@ -1046,10 +1129,11 @@ class SearchAll(ctk.CTkFrame):
             return False
 
 class Tester(ctk.CTkFrame):
-    def __init__(self, parent, controller, app):
+    def __init__(self, parent, controller, app, mediator):
         super().__init__(parent)
         self.controller = controller
         self.app = app
+        self.mediator = mediator
         label = ctk.CTkLabel(self, text="Tester", font=("Arial", 20))
         label.grid(row=0, column=0, columnspan=3, pady=20, sticky="w")
 
@@ -1076,7 +1160,7 @@ class Tester(ctk.CTkFrame):
         self.console_text.pack(pady=10) 
     def test_add(self, operations, overlap):
     
-        results = self.app.test_add(operations, overlap)
+        results = self.mediator.request(self, "test_add", operations, overlap)
         self.display_results(results)
     def display_results(self, results):
         self.console_text.configure(state='normal')
@@ -1085,11 +1169,11 @@ class Tester(ctk.CTkFrame):
         self.console_text.configure(state='disabled')
         
 class FileHandler(ctk.CTkFrame):
-    def __init__(self, parent, controller, app):
+    def __init__(self, parent, controller, app, mediator):
         super().__init__(parent)
         self.controller = controller
         self.__app = app
-        
+        self.mediator = mediator
         label = ctk.CTkLabel(self, text="Názov súboru", font=("Arial", 16))
         label.grid(row=0, column=0, pady=10, padx=10, sticky="w")
 
@@ -1108,7 +1192,7 @@ class FileHandler(ctk.CTkFrame):
             self.show_alert("Prosím, zadajte názov súboru.")
             return
         
-        self.__app.save_to_file(filename)
+        self.mediator.notify(self, "save_to_file", filename)
         self.show_success_message("Dáta boli úspešne uložené.")
        
     def load_from_file(self):
@@ -1117,7 +1201,7 @@ class FileHandler(ctk.CTkFrame):
             self.show_alert("Prosím, zadajte názov súboru.")
             return
 
-        self.__app.load_from_file(filename)
+        self.mediator.notify(self, "load_from_file", filename)
         self.show_success_message("Dáta boli úspešne načítané.")
 
     def show_success_message(self, message):

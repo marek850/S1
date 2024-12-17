@@ -1,12 +1,13 @@
 import random
 from DataStructure.IDataStructureFactory import IDataStructureFactory
-from DataStructure.KDTree import KDTree
 from DataStructure.KDNode import KDNode
+from FileProcessing.CSVFileStrategy import CSVFileStrategy
+from FileProcessing.JSONFileStrategy import JSONFileStrategy
+from UserInterface.UserInterface import IUserInterface
 from Locations.Parcel import Parcel, ParcelGui
 from Locations.GpsPosition import GPSPosition
 from Locations.Property import Property, PropertyGui
 from DataGeneration.Generator import Generator
-from DataGeneration.Tester import OpGenerator
 from DataGeneration.DataGenerator import DataGenerator
 from FileProcessing.FileProcessor import FileHandler
 
@@ -29,7 +30,6 @@ class GeoApp:
     @property
     def all_tree(self):
         return self.__all_tree
-    
     def add_property(self, property_number, description, start_lat_dir, start_latitude, start_long_dir, start_longtitude,  end_lat_dir, \
         end_latitude, end_long_dir, end_longtitude):
         start_gps_position = GPSPosition(start_lat_dir, start_latitude, start_long_dir, start_longtitude)
@@ -129,13 +129,21 @@ class GeoApp:
     def save_to_file(self, file_name):
         all_nodes = self.all_tree.level_order_traversal_unique_data()
         #sorted_nodes = sorted(all_nodes, key=lambda Area: Area.unique_id)
-        file_handler = FileHandler(file_name, self)
-        file_handler.save_to_file(all_nodes)
+        if file_name.endswith(".json"):
+            file_handler = FileHandler(file_name, self, JSONFileStrategy())
+            file_handler.save_to_file(all_nodes)
+        elif file_name.endswith(".csv"):
+            file_handler = FileHandler(file_name, self, CSVFileStrategy())
+            file_handler.save_to_file(all_nodes)
         
     def load_from_file(self, file_name):
         self.clear_trees()
-        file_handler = FileHandler(file_name, self)
-        file_handler.load_from_file()
+        if file_name.endswith(".json"):
+            file_handler = FileHandler(file_name, self, JSONFileStrategy())
+            file_handler.load_from_file()
+        elif file_name.endswith(".csv"):
+            file_handler = FileHandler(file_name, self, CSVFileStrategy())
+            file_handler.load_from_file()
         
     def search_all_by_gps(self, gps_position_1: GPSPosition, gps_position_2: GPSPosition):
         all_properties_1 = self.all_tree.search((gps_position_1.latitude_value, gps_position_1.longitude_value))
