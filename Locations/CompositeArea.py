@@ -3,7 +3,7 @@ from Locations.Area import AreaUnit
 
 
 class CompositeArea(AreaUnit, ABC):
-    def __init__(self, unique_id, parcel_number, description, boundary):
+    def __init__(self, unique_id, description, boundary):
         super().__init__(unique_id, boundary, description)
         self.children = []
 

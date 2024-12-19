@@ -3,8 +3,8 @@ from abc import ABC, abstractmethod
 
 class IUserInterface(ABC):
     @abstractmethod
-    def notify(self, sender, event_type: str, *args):
+    def notify(self, event_type: str, *args):
         pass
     @abstractmethod
-    def request(self, sender, event_type: str, *args):
+    def request(self, event_type: str, *args):
         pass

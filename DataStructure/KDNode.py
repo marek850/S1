@@ -1,5 +1,4 @@
-from DataStructure.Node import IDataNode
-class KDNode(IDataNode):
+class KDNode():
     def __init__(self, key: tuple, data):
         self.__dim = 0
         self.__keys = key         # Tuple klucov

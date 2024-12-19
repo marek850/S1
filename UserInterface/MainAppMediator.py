@@ -6,7 +6,7 @@ class MainAppMediator(IUserInterface):
     def __init__(self, app):
         self.app = app  
 
-    def notify(self, sender, event_type: str, *args):
+    def notify(self, event_type: str, *args):
         if event_type == "add_property":
             self.handle_add_property(*args)
         elif event_type == "add_parcel":
@@ -25,7 +25,7 @@ class MainAppMediator(IUserInterface):
             self.handle_file_load(*args)   
         else:
             print(f"Unknown event type: {event_type}")
-    def request(self, sender, event_type: str, *args):
+    def request(self, event_type: str, *args):
         if event_type == "search_properties":
             return self.handle_search_properties_by_gps(*args)
         elif event_type == "search_parcels":

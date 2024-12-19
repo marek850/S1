@@ -1,19 +1,18 @@
 from abc import ABC, abstractmethod
 
-from DataStructure.Node import IDataNode
 
 
 class IDataStructure(ABC):
     @abstractmethod
-    def insert(self, node: IDataNode):
+    def insert(self, *args):
         pass
 
     @abstractmethod
-    def search(self, key: tuple) -> IDataNode:
+    def search(self, *args):
         pass
     @abstractmethod
-    def delete(self, key: tuple, data):
+    def delete(self, *args):
         pass
     @abstractmethod
-    def update(self, key: tuple, data, new_data):
+    def update(self, *args):
         pass
