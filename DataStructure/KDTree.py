@@ -1,9 +1,11 @@
 
 from DataStructure.DataStructure import IDataStructure
 from DataStructure.KDNode import KDNode
+from DataStructure.KDTreeInOrder import KDTreeInOrder
+from DataStructure.KDTreeLevelOrder import KDTreeLevelOrder
 
 
-class KDTree(IDataStructure):
+class KDTree():
     def __init__(self, dimensions=2):
         self.__dim = dimensions
         self.__root = None
@@ -250,10 +252,23 @@ class KDTree(IDataStructure):
         if to_insert != []:
             for node in to_insert:
                 self.insert(node)   
-                     
+    def create_inorder_iterator(self):
+        return KDTreeInOrder(self.__root)
+    
+    def create_levelorder_iterator(self):
+        return KDTreeLevelOrder(self.__root)                 
     
     def level_order_traversal_unique_data(self):
         if self.__root is None:
+            return []
+        nodes = []
+        iterator = self.create_levelorder_iterator()
+        while iterator.has_next():
+            current = iterator.next()
+            if current.data not in nodes:
+                nodes.append(current.data)
+        return nodes
+        """ if self.__root is None:
             return []
         nodes = []
         queue = [self.__root]
@@ -265,10 +280,17 @@ class KDTree(IDataStructure):
                 queue.append(current.left)
             if current.right:
                 queue.append(current.right)
-        return nodes        
+        return nodes         """
     def level_order_traversal(self):
-        
         if self.__root is None:
+            return []
+        nodes = []
+        iterator = self.create_levelorder_iterator()
+        while iterator.has_next():
+            current = iterator.next()
+            nodes.append(current)
+        return nodes
+        """ if self.__root is None:
             return []
         nodes = []
         queue = [self.__root]
@@ -279,7 +301,7 @@ class KDTree(IDataStructure):
                 queue.append(current.left)
             if current.right:
                 queue.append(current.right)
-        return nodes        
+        return nodes         """
     def __find_duplicates_by_dimension(self, node, dimension):
         duplicates = []
         current = node.right
@@ -354,6 +376,14 @@ class KDTree(IDataStructure):
         nodes = []
         current = self.__root
         temp = []
+        iterator = self.create_levelorder_iterator()
+        while iterator.has_next():
+            current = iterator.next()
+            nodes.append(current)
+        return nodes
+        """ nodes = []
+        current = self.__root
+        temp = []
         while True:
             if current is not None:
                 temp.append(current)
@@ -365,4 +395,4 @@ class KDTree(IDataStructure):
                 nodes.append(current)
                 temp.pop()
                 current = current.right
-        return nodes
+        return nodes """

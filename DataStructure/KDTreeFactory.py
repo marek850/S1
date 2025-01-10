@@ -10,5 +10,5 @@ class TreeFactory(IDataStructureFactory):
         self.args = args
     def create_structure(self) -> IDataStructure:
         if self.type == "KDTree":
-            return KDTree(self.args)
+            return KDTree(*self.args)
     

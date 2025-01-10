@@ -213,8 +213,7 @@ class PropertyInsert(ctk.CTkFrame):
         latitude_direction_2 = latitude_direction_2[0]
         longitude_direction_2 = longitude_direction_2[0]
         self.update()
-        self.mediator.notify(
-            "add_property", 
+        self.mediator.handle_add_property(
             property_number,
             description,
             latitude_direction_1,
@@ -399,8 +398,7 @@ class ParcelInsert(ctk.CTkFrame):
         latitude_direction_2 = latitude_direction_2[0]
         longitude_direction_2 = longitude_direction_2[0]
         
-        self.mediator.notify(
-            "add_parcel",
+        self.mediator.handle_add_parcel(
             parcel_number,
             description,
             latitude_direction_1,
@@ -557,8 +555,7 @@ class PropertyUpdate(ctk.CTkToplevel):
         latitude_value_2 = float(self.latitude_value_entry_2.get().strip())
         longitude_direction_2 = self.longitude_direction_var_2.get()
         longitude_value_2 = float(self.longitude_value_entry_2.get().strip())
-        self.mediator.notify(
-            "update_property",
+        self.mediator.handle_update_property(
             self.property_id,
             property_number,
             description,
@@ -715,8 +712,7 @@ class ParcelUpdate(ctk.CTkToplevel):
         latitude_value_2 = float(self.latitude_value_entry_2.get().strip())
         longitude_direction_2 = self.longitude_direction_var_2.get()
         longitude_value_2 = float(self.longitude_value_entry_2.get().strip())
-        self.mediator.notify(
-            "update_parcel",
+        self.mediator.handle_update_parcel(
             self.parcel_id,
             parcel_number,
             description,
@@ -835,7 +831,7 @@ class PropertySearch(ctk.CTkFrame):
         longitude_direction = longitude_direction[0]  # "East" -> "E", "West" -> "W"
         gps_pos = Gps(latitude_direction, float(latitude_value), longitude_direction, float(longitude_value))
         
-        results = self.mediator.request("search_properties", gps_pos)
+        results = self.mediator.handle_search_properties_by_gps(gps_pos)
 
         
         self.display_results(results)
@@ -864,8 +860,7 @@ class PropertySearch(ctk.CTkFrame):
 
     def delete_property(self, property):
         if messagebox.askyesno("Potvrdenie vymazania", "Naozaj chcete vymazat tuto nehnutelnost?"):
-            self.mediator.notify(
-                "property_delete", 
+            self.mediator.handle_delete_property(
                 property
                 )
 
@@ -942,7 +937,7 @@ class ParcelSearch(ctk.CTkFrame):
         longitude_direction = longitude_direction[0]  # "East" -> "E", "West" -> "W"
         gps_pos = Gps(latitude_direction, float(latitude_value), longitude_direction, float(longitude_value))
         
-        results = self.mediator.request("search_parcels", gps_pos)
+        results = self.mediator.handle_search_parcels_by_gps(gps_pos)
         self.display_results(results)
     
     def display_results(self, results):
@@ -969,7 +964,7 @@ class ParcelSearch(ctk.CTkFrame):
 
     def delete_parcel(self, parcel):
         if messagebox.askyesno("Potvrdenie vymazania", "Naozaj chcete vymazat tuto parcelu?"):
-            self.mediator.notify("parcel_delete", parcel)
+            self.mediator.handle_delete_parcel(parcel)
     
     def show_alert(self, message):
         messagebox.showerror("Chyba", message)
@@ -1097,7 +1092,7 @@ class SearchAll(ctk.CTkFrame):
         gps_1 = Gps(latitude_direction_1, float(latitude_value_1), longitude_direction_1, float(longitude_value_1))
         gps_2 = Gps(latitude_direction_2, float(latitude_value_2), longitude_direction_2, float(longitude_value_2))
 
-        results = self.mediator.request("search_all_properties", gps_1, gps_2)
+        results = self.mediator.handle_search_all_by_gps(gps_1, gps_2)
         
         self.display_results(results)
 
@@ -1155,7 +1150,7 @@ class Tester(ctk.CTkFrame):
         self.console_text.pack(pady=10) 
     def test_add(self, operations, overlap):
     
-        results = self.mediator.request("test_add", operations, overlap)
+        results = self.mediator.handle_test_add(operations, overlap)
         self.display_results(results)
     def display_results(self, results):
         self.console_text.configure(state='normal')
@@ -1187,7 +1182,7 @@ class FileHandler(ctk.CTkFrame):
             self.show_alert("Prosím, zadajte názov súboru.")
             return
         
-        self.mediator.notify("save_to_file", filename)
+        self.mediator.handle_file_save(filename)
         self.show_success_message("Dáta boli úspešne uložené.")
        
     def load_from_file(self):
@@ -1196,7 +1191,7 @@ class FileHandler(ctk.CTkFrame):
             self.show_alert("Prosím, zadajte názov súboru.")
             return
 
-        self.mediator.notify("load_from_file", filename)
+        self.mediator.handle_file_load(filename)
         self.show_success_message("Dáta boli úspešne načítané.")
 
     def show_success_message(self, message):
