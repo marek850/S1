@@ -163,7 +163,7 @@ class GeoApp:
         return filtered_objects
 
     def delete_property(self, property):
-        property = Property(property.unique_id, property.property_number, property.description, property.boundary)
+        property = Property(property.unique_id, property.number, property.description, property.boundary)
         properties = []
         for node in self.properties_tree.search((property.boundary[0].latitude_value, property.boundary[0].longitude_value)):
             if node.data == property and node not in properties:
@@ -177,7 +177,7 @@ class GeoApp:
             self.update_parcel_references(node.data, node, None, "delete")
             
     def delete_parcel(self, parcel):
-        parcel = Parcel(parcel.unique_id, parcel.parcel_number, parcel.description, parcel.boundary)
+        parcel = Parcel(parcel.unique_id, parcel.number, parcel.description, parcel.boundary)
         parcels = []
         for node in self.parcels_tree.search((parcel.boundary[0].latitude_value, parcel.boundary[0].longitude_value)):
             if node.data == parcel and node not in parcels:

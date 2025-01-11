@@ -59,7 +59,7 @@ class DataGenerator:
                     (gps1, gps2)
                 )
                 
-                self.__app.add_property(property.property_number, \
+                self.__app.add_property(property.number, \
                     property.description, property.boundary[0].latitude_direction, abs(property.boundary[0].latitude_value),\
                        property.boundary[0].longitude_direction, abs(property.boundary[0].longitude_value), \
                            property.boundary[1].latitude_direction, abs(property.boundary[1].latitude_value),\
@@ -74,7 +74,7 @@ class DataGenerator:
                     value, 
                     (gps2, gps1)
                 )
-                self.__app.add_parcel(parcel.parcel_number, \
+                self.__app.add_parcel(parcel.number, \
                     parcel.description, parcel.boundary[0].latitude_direction, abs(parcel.boundary[0].latitude_value),\
                        parcel.boundary[0].longitude_direction, abs(parcel.boundary[0].longitude_value), \
                            parcel.boundary[1].latitude_direction, abs(parcel.boundary[1].latitude_value),\

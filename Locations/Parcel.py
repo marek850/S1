@@ -4,7 +4,7 @@ from Locations.Area import AreaUnit
 class Parcel(AreaUnit):
     def __init__(self, unique_id, parcel_number, description, boundary):
         super().__init__(unique_id, boundary, description)
-        self.__parcel_number = parcel_number
+        self.__number = parcel_number
         self.__properties = []   
     
     def __eq__(self, other):
@@ -21,14 +21,14 @@ class Parcel(AreaUnit):
     def remove_property(self, property):
        self.properties.remove(property)
     def get_data(self):
-        return "".join(f"par,{self.unique_id},{self.__parcel_number},{self.description},{self.start_lat_dir},{abs(self.start_lat)},{self.start_lon_dir},{abs(self.start_lon)},{self.end_lat_dir},{self.end_lat},{self.end_lon_dir},{self.end_lon}")    
+        return "".join(f"par,{self.unique_id},{self.__number},{self.description},{self.start_lat_dir},{abs(self.start_lat)},{self.start_lon_dir},{abs(self.start_lon)},{self.end_lat_dir},{self.end_lat},{self.end_lon_dir},{self.end_lon}")    
         
     def __str__(self):
-        return f"Parcela {self.__parcel_number}: {self.description}, Zaciatok: {self.boundary[0]}, Koniec: {self.boundary[1]}\n"
+        return f"Parcela {self.__number}: {self.description}, Zaciatok: {self.boundary[0]}, Koniec: {self.boundary[1]}\n"
     
     @property
-    def parcel_number(self):
-        return self.__parcel_number
+    def number(self):
+        return self.__number
 
     @property
     def properties(self):
@@ -40,7 +40,7 @@ class Parcel(AreaUnit):
 class ParcelGui():
     def __init__(self, parcel):
         self.__description = parcel.description
-        self.__parcel_number = parcel.parcel_number
+        self.__number = parcel.number
         self.__unique_id = parcel.unique_id
         self.__boundary = parcel.boundary
         self.__properties = parcel.properties
@@ -53,7 +53,7 @@ class ParcelGui():
     def __str__(self):
         properties_str = "\n".join([f"{property}" for property in self.__properties])
         return (
-            f"Parcela: Cislo: {self.__parcel_number}, Popis: {self.__description}, "
+            f"Parcela: Cislo: {self.__number}, Popis: {self.__description}, "
             f"Zaciatok: {self.__boundary[0]}, Koniec: {self.__boundary[1]}\n"
             f"Nehnutelnosti na parcele:\n{properties_str}"
         )
@@ -67,12 +67,12 @@ class ParcelGui():
         self.__description = value
 
     @property
-    def parcel_number(self):
-        return self.__parcel_number
+    def number(self):
+        return self.__number
 
-    @parcel_number.setter
-    def parcel_number(self, value):
-        self.__parcel_number = value
+    @number.setter
+    def number(self, value):
+        self.__number = value
 
     @property
     def unique_id(self):
